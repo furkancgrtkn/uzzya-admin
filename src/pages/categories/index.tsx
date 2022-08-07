@@ -41,7 +41,7 @@ const Categories = () => {
   useEffect(() => {
     if (categories) {
       setRows(
-        categories.map((e: any) => {
+        categories.map((e) => {
           return [
             {
               render: e.title,
@@ -77,8 +77,8 @@ const Categories = () => {
             },
             {
               data: {
-                deleteLink: "/api/category/delete",
-                editLink: `/kategori-duzenle/${e.slug}`,
+                deleteEndpoint: `/category/delete/${e.id}`,
+                editLink: `/categories/edit/${e.slug}`,
                 deleteId: e.id,
               },
               selector: "jsonData",
@@ -88,22 +88,7 @@ const Categories = () => {
       );
     }
   }, [categories]);
-  const actions = [
-    {
-      id: 1,
-      event: () => {
-        router.replace(`/categories/create`);
-      },
-      icon: (
-        <FontAwesomeIcon
-          icon={faPlus}
-          className="w-4 h-4 mr-2 text-slate-700"
-        />
-      ),
-      label: "Kategori Oluştur",
-    },
-  ];
-  console.log(categories);
+
   if (isError) {
     return <div>Error</div>;
   }
@@ -115,10 +100,13 @@ const Categories = () => {
           <>
             <Button
               className="w-full px-4 border-l border-slate-400 hover:bg-slate-100"
-              onClick={() => actions[0].event()}
+              onClick={() => router.replace(`/categories/create`)}
             >
-              {actions[0].icon}
-              <span className="text-slate-800">{actions[0].label}</span>
+              <FontAwesomeIcon
+                icon={faPlus}
+                className="w-4 h-4 mr-2 text-slate-700"
+              />
+              <span className="text-slate-800">Kategori Oluştur</span>
             </Button>
           </>
         }

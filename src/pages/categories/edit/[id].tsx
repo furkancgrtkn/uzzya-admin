@@ -15,8 +15,9 @@ import * as yup from "yup";
 import Default from "src/components/Layout/Default";
 import { useRouter } from "next/router";
 import useCategories from "src/hooks/api/categories/useCategories";
+import useCategory from "src/hooks/api/categories/useCategory";
 
-interface CreateCategoryRequest {
+interface UpdateCategoryRequest {
   title: string;
   slug: string;
   parent_id: string;
@@ -30,8 +31,9 @@ const schema = yup
     parent_id: yup.string().notRequired().nullable(),
   })
   .required();
-const CreateCategory = () => {
+const UpdateCategory = () => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
+  const [currentImage, setCurrentImage] = useState<string | undefined>();
 
   const {
     register,
@@ -40,20 +42,24 @@ const CreateCategory = () => {
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateCategoryRequest>({
+  } = useForm<UpdateCategoryRequest>({
     resolver: yupResolver(schema),
   });
 
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<CreateCategoryRequest> = async (data) => {
-    if (files.length > 0) {
-      setPostLoad(true);
-      try {
-        const { data: cat } = await axiosInstance.post("/category/create", {
-          data,
-          select: { id: true },
-        });
+  const onSubmit: SubmitHandler<UpdateCategoryRequest> = async (data) => {
+    setPostLoad(true);
+    try {
+      const { data: cat } = await axiosInstance.post("/category/update", {
+        data: {
+          ...data,
+          image: currentImage,
+        },
+        where: { id: category?.id },
+        select: { id: true },
+      });
+      if (files.length > 0) {
         const formData = new FormData();
         Object.values(files).map((file: any) => {
           formData.append("files", file);
@@ -68,15 +74,13 @@ const CreateCategory = () => {
             },
           }
         );
-        toast.success("İşlem Başarılı");
-        router.replace("/categories");
-      } catch (error) {
-        toast.error("Hata");
-      } finally {
-        setPostLoad(false);
       }
-    } else {
-      toast.error("Lütfen Görsel Ekleyiniz");
+      toast.success("İşlem Başarılı");
+      router.replace("/categories");
+    } catch (error) {
+      toast.error("Hata");
+    } finally {
+      setPostLoad(false);
     }
   };
   const [files, setFiles] = useState<any>([]);
@@ -101,15 +105,29 @@ const CreateCategory = () => {
     return () =>
       files.forEach((file: any) => URL.revokeObjectURL(file.preview));
   }, [files]);
+
   const { data: categories, isError } = useCategories();
-  if (isError) {
+  const { data: category, isError: categoryError } = useCategory(
+    router.query.id as string
+  );
+
+  useEffect(() => {
+    if (category) {
+      setValue("title", category.title);
+      setValue("parent_id", category.parent?.id);
+      setValue("slug", category.slug);
+      setCurrentImage(category.image);
+    }
+  }, [category, setValue]);
+
+  if (isError || categoryError) {
     return <div>Error</div>;
   }
   return (
     <>
       <PageHeader className="pl-4" title={"Kategori Oluştur"} />
       <div className="p-4">
-        {categories ? (
+        {categories && category ? (
           <form
             className="grid grid-cols-1 gap-4"
             onSubmit={handleSubmit(onSubmit)}
@@ -136,19 +154,28 @@ const CreateCategory = () => {
               inputProps={{
                 ...register("parent_id"),
               }}
-              options={categories.map((el) => {
-                return {
-                  id: el.id,
-                  value: el.id,
-                  label: el.title,
-                };
-              })}
+              options={categories
+                .filter((el) => el.id !== category.id)
+                .map((el: any) => {
+                  return {
+                    id: el.id,
+                    value: el.id,
+                    label: el.title,
+                  };
+                })}
               error={errors.parent_id?.message}
             />
 
-            <div className="w-full">
+            <div className="w-full flex">
+              <div className="mr-2">
+                <img
+                  className="min-w-[96px] border border-slate-400 rounded overflow-hidden w-24 h-24 object-cover"
+                  src={`${process.env.NEXT_APP_API_URL}/${currentImage}`}
+                  alt=""
+                />
+              </div>
               <div
-                className="border cursor-pointer border-slate-400 p-6 rounded overflow-hidden"
+                className="border w-full cursor-pointer border-slate-400 p-6 rounded overflow-hidden"
                 {...getRootProps()}
               >
                 <input {...getInputProps()} />
@@ -195,8 +222,8 @@ const CreateCategory = () => {
     </>
   );
 };
-export default CreateCategory;
+export default UpdateCategory;
 
-CreateCategory.getLayout = function getLayout(page: ReactElement) {
+UpdateCategory.getLayout = function getLayout(page: ReactElement) {
   return <Default>{page}</Default>;
 };

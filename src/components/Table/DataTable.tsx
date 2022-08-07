@@ -21,7 +21,7 @@ export interface DataTableProps {
     selector: string;
     data?: {
       editLink: string;
-      deleteLink: string;
+      deleteEndpoint: string;
       deleteId: string;
     };
   }[][];
@@ -69,7 +69,7 @@ const DataTable: FC<DataTableProps> = ({ className, cols, rows }) => {
                     <TrashBtn
                       endPoint={
                         row.filter((r) => r.selector === "jsonData")[0].data
-                          ?.deleteLink as string
+                          ?.deleteEndpoint as string
                       }
                       id={
                         row.filter((r) => r.selector === "jsonData")[0].data

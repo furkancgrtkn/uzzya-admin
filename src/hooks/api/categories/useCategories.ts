@@ -1,9 +1,9 @@
-import { Categories } from "./types";
+import { Category } from "./types";
 import { useEffect, useState } from "react";
 import axiosInstance from "src/utils/axiosInstance";
 
 export default function useCategories() {
-  const [data, setData] = useState<Categories[] | undefined>();
+  const [data, setData] = useState<Category[] | undefined>();
   const [error, setError] = useState<boolean>(false);
   const fetcher = async () => {
     try {
