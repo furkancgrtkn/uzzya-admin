@@ -17,7 +17,7 @@ function deleteAllCookies() {
   }
 }
 
-const refreshaccess_token = async () => {
+const refresh = async () => {
   try {
     const refresh_token = await cookies.get("refresh_token");
     if (!refresh_token) {
@@ -33,12 +33,12 @@ const refreshaccess_token = async () => {
       }
     );
     if (res.data) {
-      cookies.set(`access_token`, `${res.data.access_token.token}`, {
-        maxAge: 900,
+      cookies.set(`access_token`, `${res.data.access_token}`, {
+        maxAge: 899,
         path: "/",
       });
-      cookies.set("refresh_token", `${res.data.refresh_token.token}`, {
-        maxAge: 604800,
+      cookies.set("refresh_token", `${res.data.refresh_token}`, {
+        maxAge: 604799,
         path: "/",
       });
       return res.data.access_token;
@@ -64,9 +64,9 @@ axiosInstance.interceptors.request.use(
     if (error.response) {
       if (error.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
-        const newaccess_token = await refreshaccess_token();
+        const new_access_token = await refresh();
         axiosInstance.defaults.headers.common["Authorization"] =
-          "Bearer " + newaccess_token.token;
+          "Bearer " + new_access_token;
         return axiosInstance(error.config);
       }
     }
@@ -83,9 +83,9 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       if (error.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
-        const newaccess_token = await refreshaccess_token();
+        const new_access_token = await refresh();
         axiosInstance.defaults.headers.common["Authorization"] =
-          "Bearer " + newaccess_token.token;
+          "Bearer " + new_access_token;
         return axiosInstance(error.config);
       }
       if (error.response.status === 403) {

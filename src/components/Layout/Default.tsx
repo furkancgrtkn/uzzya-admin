@@ -5,7 +5,7 @@ export default function Default({ children }: { children: React.ReactNode }) {
     <PrivateRoute>
       <>
         <Sidebar />
-        <main className={`w-[calc(100%-56px)] ml-[56px] min-h-screen p-4`}>
+        <main className={`w-[calc(100%-56px)] ml-[56px] min-h-screen`}>
           {children}
         </main>
       </>

@@ -1,8 +1,8 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from "react";
 
 interface ButtonProps {
   className?: string;
-  type?: 'button' | 'submit' | 'reset' | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   children?: ReactNode;
   disabled?: boolean;
@@ -13,20 +13,20 @@ const Button: FC<ButtonProps> = ({
   className,
   children,
   disabled,
-  type = 'button',
+  type = "button",
   loading = false,
-  onClick
+  onClick,
 }) => {
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`h-[38px] min-w-[120px] flex disabled:opacity-70 items-center text-sm justify-center whitespace-nowrap px-3 rounded ${
-        className || ''
+      className={`flex disabled:opacity-70 items-center text-sm justify-center whitespace-nowrap ${
+        className || ""
       }`}
     >
-      {loading ? 'Yükleniyor...' : children}
+      {loading ? "Yükleniyor..." : children}
     </button>
   );
 };

@@ -7,7 +7,26 @@ export default function useCategories() {
   const [error, setError] = useState<boolean>(false);
   const fetcher = async () => {
     try {
-      const { data } = await axiosInstance.post(`/category`);
+      const { data } = await axiosInstance.post(`/category`, {
+        select: {
+          id: true,
+          title: true,
+          image: true,
+          slug: true,
+          parent: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+          children: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+      });
       setData(data);
     } catch (error) {
       setError(true);

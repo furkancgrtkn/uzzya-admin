@@ -1,13 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ActionButton from "src/components/ActionButton";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { useRouter } from "next/router";
 import useCategories from "src/hooks/api/categories/useCategories";
+import Default from "src/components/Layout/Default";
+import Button from "src/components/Button";
 
 const Categories = () => {
   const router = useRouter();
@@ -62,12 +63,12 @@ const Categories = () => {
               render: (
                 <a
                   target={"_blank"}
-                  href={`${process.env.REACT_APP_API_URL}/${e.categoryImage}`}
+                  href={`${process.env.NEXT_APP_API_URL}/${e.image}`}
                   rel="noreferrer"
                 >
                   <img
                     className="min-w-[32px] border border-slate-400 rounded overflow-hidden w-8 h-8 object-cover"
-                    src={`${process.env.REACT_APP_API_URL}/${e.categoryImage}`}
+                    src={`${process.env.NEXT_APP_API_URL}/${e.image}`}
                     alt=""
                   />
                 </a>
@@ -96,7 +97,7 @@ const Categories = () => {
       icon: (
         <FontAwesomeIcon
           icon={faPlus}
-          className="w-4 h-4 mr-2 text-slate-800"
+          className="w-4 h-4 mr-2 text-slate-700"
         />
       ),
       label: "Kategori Oluştur",
@@ -108,16 +109,34 @@ const Categories = () => {
   }
   return (
     <>
-      <PageHeader title={"Kategoriler"} />
-      {categories && rows ? (
-        <DataTable className="mt-2" rows={rows} cols={cols} />
-      ) : (
-        <Loading />
-      )}
-
-      <ActionButton actions={actions} />
+      <PageHeader
+        className="pl-4"
+        actions={
+          <>
+            <Button
+              className="w-full px-4 border-l border-slate-400 hover:bg-slate-100"
+              onClick={() => actions[0].event()}
+            >
+              {actions[0].icon}
+              <span className="text-slate-800">{actions[0].label}</span>
+            </Button>
+          </>
+        }
+        title={"Kategoriler"}
+      />
+      <div className="p-4">
+        {categories && rows ? (
+          <DataTable className="mt-2" rows={rows} cols={cols} />
+        ) : (
+          <Loading />
+        )}
+      </div>
     </>
   );
 };
 
 export default Categories;
+
+Categories.getLayout = function getLayout(page: ReactElement) {
+  return <Default>{page}</Default>;
+};

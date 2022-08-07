@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { ReactElement, useState } from "react";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -15,7 +15,7 @@ type LoginInputs = {
   password: string;
 };
 
-const Login: FC = () => {
+const Login = () => {
   const cookies = new Cookies();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -31,12 +31,12 @@ const Login: FC = () => {
     axios
       .post(`${process.env.NEXT_APP_API_URL}/auth/login`, data)
       .then((res) => {
-        cookies.set(`access_token`, `${res.data.access_token.token}`, {
-          maxAge: 900,
+        cookies.set(`access_token`, `${res.data.access_token}`, {
+          maxAge: 899,
           path: "/",
         });
-        cookies.set("refresh_token", `${res.data.refresh_token.token}`, {
-          maxAge: 604800,
+        cookies.set("refresh_token", `${res.data.refresh_token}`, {
+          maxAge: 604799,
           path: "/",
         });
         dispatch(setIsLogged(true));
@@ -92,3 +92,7 @@ const Login: FC = () => {
 };
 
 export default Login;
+
+Login.getLayout = function getLayout(page: ReactElement) {
+  return page;
+};
