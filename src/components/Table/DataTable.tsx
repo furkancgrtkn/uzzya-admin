@@ -1,4 +1,11 @@
-import { FC, ReactNode, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Paragraph from "../Typography/Paragraph";
@@ -26,12 +33,23 @@ export interface DataTableProps {
     };
   }[][];
   cols: { row: string; name: string }[];
+  setEditRow: Dispatch<SetStateAction<string | number | undefined>>;
 }
 
-const DataTable: FC<DataTableProps> = ({ className, cols, rows }) => {
-  const [tableRows, setTableRows] = useState<DataTableProps["rows"]>(rows);
+const DataTable: FC<DataTableProps> = ({
+  className,
+  setEditRow,
+  cols,
+  rows,
+}) => {
+  const [tableRows, setTableRows] = useState<
+    DataTableProps["rows"] | undefined
+  >();
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const router = useRouter();
+
+  useEffect(() => {
+    setTableRows(rows);
+  }, [rows]);
   return tableRows && tableRows.length > 0 ? (
     <Wrapper className={className}>
       <TableTag>
@@ -57,9 +75,9 @@ const DataTable: FC<DataTableProps> = ({ className, cols, rows }) => {
                   <div className={"ml-auto flex w-min"}>
                     <button
                       onClick={() =>
-                        router.push(
+                        setEditRow(
                           row.filter((r) => r.selector === "jsonData")[0].data
-                            ?.editLink as string
+                            ?.deleteId
                         )
                       }
                       className="flex mr-2 disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200"

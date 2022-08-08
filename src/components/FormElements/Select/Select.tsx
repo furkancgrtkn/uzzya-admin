@@ -67,7 +67,9 @@ const Select: FC<SelectProps> = ({
       {val && (
         <button
           type="button"
-          className="absolute z-20 w-[14px] h-[14px] right-3 top-[7px] transfrom"
+          className={`absolute z-20 w-[14px] h-[14px] right-3 ${
+            label ? "top-[28px]" : "top-[7px]"
+          } transfrom`}
           onClick={() => {
             setValue(null);
             setVal("");

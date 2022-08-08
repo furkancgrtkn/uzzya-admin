@@ -6,15 +6,19 @@ import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { useRouter } from "next/router";
-import useCategories from "src/hooks/api/categories/useCategories";
+import useCategories from "src/hooks/api/category/useCategories";
 import Default from "src/components/Layout/Default";
 import Button from "src/components/Button";
+import Drawer from "src/components/Drawer";
+import { CreateCategory, EditCategory } from "src/views/forms";
 
 const Categories = () => {
-  const router = useRouter();
-
-  const { data: categories, isError } = useCategories();
   const [rows, setRows] = useState<DataTableProps["rows"] | null>();
+  const [editRow, setEditRow] = useState<string | number>();
+  const [createOpen, setCreateOpen] = useState<boolean>(false);
+
+  const { data: categories, isError, reFetch } = useCategories();
+
   const cols = [
     {
       name: "Kategori",
@@ -100,7 +104,7 @@ const Categories = () => {
           <>
             <Button
               className="w-full px-4 border-l border-slate-400 hover:bg-slate-100"
-              onClick={() => router.replace(`/categories/create`)}
+              onClick={() => setCreateOpen(true)}
             >
               <FontAwesomeIcon
                 icon={faPlus}
@@ -114,11 +118,57 @@ const Categories = () => {
       />
       <div className="p-4">
         {categories && rows ? (
-          <DataTable className="mt-2" rows={rows} cols={cols} />
+          <DataTable
+            setEditRow={setEditRow}
+            className="mt-2"
+            rows={rows}
+            cols={cols}
+          />
         ) : (
           <Loading />
         )}
       </div>
+
+      {categories && (
+        <Drawer
+          isOpen={!!editRow}
+          setIsOpen={(e) => {
+            if (!e) {
+              setEditRow(undefined);
+            }
+          }}
+        >
+          <EditCategory
+            categories={categories}
+            category={categories?.find((e) => e.id === editRow)}
+            setRows={() => {
+              reFetch().then(() => {
+                setEditRow(undefined);
+              });
+            }}
+          />
+        </Drawer>
+      )}
+
+      {categories && (
+        <Drawer
+          isOpen={createOpen}
+          setIsOpen={(e) => {
+            if (!e) {
+              setCreateOpen(false);
+            }
+          }}
+        >
+          <CreateCategory
+            categories={categories}
+            setRows={() => {
+              reFetch().then(() => {
+                setCreateOpen(false);
+              });
+            }}
+          />
+        </Drawer>
+      )}
     </>
   );
 };

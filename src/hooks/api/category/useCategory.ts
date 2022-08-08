@@ -11,7 +11,6 @@ export default function useCategory(slug: string) {
         where: {
           slug: whereslug,
         },
-
         select: {
           id: true,
           title: true,

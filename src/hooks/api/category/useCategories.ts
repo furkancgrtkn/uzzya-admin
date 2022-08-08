@@ -6,6 +6,8 @@ export default function useCategories() {
   const [data, setData] = useState<Category[] | undefined>();
   const [error, setError] = useState<boolean>(false);
   const fetcher = async () => {
+    setData(undefined);
+    setError(false);
     try {
       const { data } = await axiosInstance.post(`/category`, {
         select: {
@@ -34,8 +36,6 @@ export default function useCategories() {
   };
 
   useEffect(() => {
-    setData(undefined);
-    setError(false);
     fetcher();
   }, []);
 
@@ -43,5 +43,6 @@ export default function useCategories() {
     data: data,
     isLoading: !error && !data,
     isError: error,
+    reFetch: fetcher,
   };
 }

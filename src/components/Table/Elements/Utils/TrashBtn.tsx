@@ -12,7 +12,7 @@ interface TrashBtnProps {
   id: string;
   endPoint: string;
   setLoadingDelete: React.Dispatch<React.SetStateAction<boolean>>;
-  setTableRows: React.Dispatch<React.SetStateAction<any[]>>;
+  setTableRows: React.Dispatch<React.SetStateAction<any[] | undefined>>;
 }
 
 const TrashBtn: FC<TrashBtnProps> = ({
@@ -56,8 +56,7 @@ const TrashBtn: FC<TrashBtnProps> = ({
                 .delete(endPoint)
                 .then(() => {
                   setTableRows((prev) => {
-                    console.log(prev);
-                    return prev.filter(
+                    return prev?.filter(
                       (row) =>
                         row.filter((e: any) => e.selector === "jsonData")[0]
                           .data.deleteId !== id
