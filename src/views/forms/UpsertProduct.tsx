@@ -18,7 +18,7 @@ import { ProductType } from "src/hooks/api/products/types";
 import useProducts from "src/hooks/api/products/useProducts";
 import axiosInstance from "src/utils/axiosInstance";
 
-interface CreateEditProductRequest {
+interface UpsertProductRequest {
   slug: string;
   title: string;
   parent_id: string;
@@ -58,7 +58,7 @@ const schema = yup
     parent_id: yup.string().notRequired().nullable(),
   })
   .required();
-const CreateEditProduct = ({
+const UpsertProduct = ({
   setRows,
   product,
 }: {
@@ -76,7 +76,7 @@ const CreateEditProduct = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<CreateEditProductRequest>({
+  } = useForm<UpsertProductRequest>({
     resolver: yupResolver(schema),
     defaultValues: {
       attributes: [],
@@ -103,60 +103,49 @@ const CreateEditProduct = ({
     },
   });
 
-  const onSubmit: SubmitHandler<CreateEditProductRequest> = async (data) => {
+  const onSubmit: SubmitHandler<UpsertProductRequest> = async (data) => {
     setPostLoad(true);
     try {
-      if (product) {
-        const { data: cat } = await axiosInstance.post("/product/update", {
-          data: {
-            ...data,
-            images: currentImages,
-            thumbnail: currentThumbnail,
+      const { data: prod } = await axiosInstance.post("/product/upsert", {
+        create: {
+          ...data,
+          attributes: {
+            create: data.attributes.map((e) => {
+              return { attribute: { connect: { id: e } } };
+            }),
           },
-          where: { id: product?.id },
-          select: { id: true },
+        },
+        update: {
+          ...data,
+          images: currentImages,
+          thumbnail: currentThumbnail,
+          attributes: {
+            deleteMany: {},
+            create: data.attributes.map((e) => {
+              return { attribute: { connect: { id: e } } };
+            }),
+          },
+        },
+        where: { id: product?.id || "" },
+        select: { id: true },
+      });
+      if (files.length > 0) {
+        const formData = new FormData();
+        Object.values(files).map((file: any) => {
+          formData.append("files", file);
+          return null;
         });
-        if (files.length > 0) {
-          const formData = new FormData();
-          Object.values(files).map((file: any) => {
-            formData.append("files", file);
-            return null;
-          });
-          await axiosInstance.post(
-            `/upload/images?model=product&id=${cat.id}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-        }
-      } else {
-        if (files.length > 0) {
-          const { data: prod } = await axiosInstance.post("/product/create", {
-            data,
-            select: { id: true },
-          });
-          const formData = new FormData();
-          Object.values(files).map((file: any) => {
-            formData.append("files", file);
-            return null;
-          });
-          await axiosInstance.post(
-            `/upload/images?model=product&id=${prod.id}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-        } else {
-          toast.error("Lütfen Görsel Ekleyiniz");
-          return;
-        }
+        await axiosInstance.post(
+          `/upload/images?model=product&id=${prod.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
+
       toast.success("İşlem Başarılı");
       setRows();
     } catch (error) {
@@ -488,4 +477,4 @@ const CreateEditProduct = ({
     <Loading />
   );
 };
-export default CreateEditProduct;
+export default UpsertProduct;

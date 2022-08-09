@@ -3,7 +3,7 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://localhost:8080/api",
 });
 
 function deleteAllCookies() {
@@ -24,7 +24,7 @@ const refresh = async () => {
       throw new Error("No token");
     }
     const res = await axios.post(
-      `${process.env.NEXT_APP_API_URL}/auth/refresh`,
+      `${process.env.NEXT_APP_API_URL}/api/auth/refresh`,
       {},
       {
         headers: {

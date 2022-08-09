@@ -9,7 +9,7 @@ import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import useCategories from "src/hooks/api/category/useCategories";
-import { CreateEditCategory } from "src/views/forms";
+import { UpsertCategory } from "src/views/forms";
 
 const Categories = () => {
   const [rows, setRows] = useState<DataTableProps["rows"] | null>();
@@ -141,7 +141,7 @@ const Categories = () => {
             setCreateOpen(false);
           }}
         >
-          <CreateEditCategory
+          <UpsertCategory
             categories={categories}
             category={categories?.find((e) => e.id === editRow)}
             setRows={() => {

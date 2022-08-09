@@ -29,7 +29,7 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     setLoad(true);
     axios
-      .post(`${process.env.NEXT_APP_API_URL}/auth/login`, data)
+      .post(`${process.env.NEXT_APP_API_URL}/api/auth/login`, data)
       .then((res) => {
         cookies.set(`access_token`, `${res.data.access_token}`, {
           maxAge: 899,

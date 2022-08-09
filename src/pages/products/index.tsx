@@ -9,7 +9,7 @@ import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import useProducts from "src/hooks/api/products/useProducts";
-import CreateEditProduct from "src/views/forms/CreateEditProduct";
+import { UpsertProduct } from "src/views/forms";
 
 const Products = () => {
   const [rows, setRows] = useState<DataTableProps["rows"] | null>();
@@ -134,7 +134,7 @@ const Products = () => {
             setCreateOpen(false);
           }}
         >
-          <CreateEditProduct
+          <UpsertProduct
             product={products.find((e) => e.id === editRow)}
             setRows={() => {
               reFetch().then(() => {

@@ -12,7 +12,7 @@ import PageHeader from "src/components/PageHeader";
 import { Category } from "src/hooks/api/category/types";
 import axiosInstance from "src/utils/axiosInstance";
 
-interface CreateEditCategoryRequest {
+interface UpsertCategoryRequest {
   title: string;
   slug: string;
   parent_id: string;
@@ -26,7 +26,7 @@ const schema = yup
     parent_id: yup.string().notRequired().nullable(),
   })
   .required();
-const CreateEditCategory = ({
+const UpsertCategory = ({
   categories,
   setRows,
   category,
@@ -45,7 +45,7 @@ const CreateEditCategory = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<CreateEditCategoryRequest>({
+  } = useForm<UpsertCategoryRequest>({
     resolver: yupResolver(schema),
   });
 
@@ -65,59 +65,37 @@ const CreateEditCategory = ({
     },
   });
 
-  const onSubmit: SubmitHandler<CreateEditCategoryRequest> = async (data) => {
+  const onSubmit: SubmitHandler<UpsertCategoryRequest> = async (data) => {
     setPostLoad(true);
     try {
-      if (category) {
-        const { data: cat } = await axiosInstance.post("/category/update", {
-          data: {
-            ...data,
-            image: currentImage,
-          },
-          where: { id: category?.id },
-          select: { id: true },
+      const { data: cat } = await axiosInstance.post("/category/upsert", {
+        create: {
+          ...data,
+        },
+        update: {
+          ...data,
+          image: currentImage,
+        },
+        where: { id: category?.id || "" },
+        select: { id: true },
+      });
+      if (files.length > 0) {
+        const formData = new FormData();
+        Object.values(files).map((file: any) => {
+          formData.append("files", file);
+          return null;
         });
-        if (files.length > 0) {
-          const formData = new FormData();
-          Object.values(files).map((file: any) => {
-            formData.append("files", file);
-            return null;
-          });
-          await axiosInstance.post(
-            `/upload/images?model=category&id=${cat.id}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-        }
-      } else {
-        if (files.length > 0) {
-          const { data: cat } = await axiosInstance.post("/category/create", {
-            data,
-            select: { id: true },
-          });
-          const formData = new FormData();
-          Object.values(files).map((file: any) => {
-            formData.append("files", file);
-            return null;
-          });
-          await axiosInstance.post(
-            `/upload/images?model=category&id=${cat.id}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-        } else {
-          toast.error("Lütfen Görsel Ekleyiniz");
-          return;
-        }
+        await axiosInstance.post(
+          `/upload/images?model=category&id=${cat.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
+
       toast.success("İşlem Başarılı");
       setRows();
     } catch (error) {
@@ -236,4 +214,4 @@ const CreateEditCategory = ({
     </>
   ) : null;
 };
-export default CreateEditCategory;
+export default UpsertCategory;
