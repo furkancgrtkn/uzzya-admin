@@ -1,3 +1,4 @@
-import Select from './Select';
+import MultipleSelect from "./MultipleSelect";
+import Select from "./Select";
 
-export default Select;
+export { Select, MultipleSelect };

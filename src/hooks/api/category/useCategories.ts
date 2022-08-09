@@ -1,6 +1,6 @@
-import { Category } from "./types";
 import { useEffect, useState } from "react";
 import axiosInstance from "src/utils/axiosInstance";
+import { Category } from "./types";
 
 export default function useCategories() {
   const [data, setData] = useState<Category[] | undefined>();

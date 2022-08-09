@@ -5,26 +5,25 @@ import { useOnClickOutside } from "usehooks-ts";
 import ErrorMessage from "../ErrorMessage";
 import Label from "../Label";
 
-interface SelectProps {
+interface MultipleSelectProps {
   options: {
     value: string;
     filterValue?: string;
     label: ReactNode;
   }[];
-  selected: string;
-  multiple?: boolean;
+  selecteds: string[];
   disabled?: boolean;
   // eslint-disable-next-line no-unused-vars
-  onChange: (val: string | undefined) => void;
+  onChange: (val: string | []) => void;
   error?: string;
   label: string;
 }
 
-const Select: FC<SelectProps> = ({
+const MultipleSelect: FC<MultipleSelectProps> = ({
   error,
   onChange,
   disabled,
-  selected,
+  selecteds,
   label,
   options,
 }) => {
@@ -49,14 +48,14 @@ const Select: FC<SelectProps> = ({
         {label}
       </Label>
 
-      {selected && (
+      {selecteds.length > 0 && (
         <button
           type="button"
           className={`absolute z-20 w-[14px] h-[14px] right-3 ${
             label ? "top-[28px]" : "top-[7px]"
           } transfrom`}
           onClick={() => {
-            onChange(undefined);
+            onChange([]);
           }}
         >
           <FontAwesomeIcon
@@ -72,14 +71,26 @@ const Select: FC<SelectProps> = ({
         }}
         className="relative cursor-pointer z-10 flex items-center justify-between w-full h-[38px] px-3 text-sm font-normal bg-white border rounded text-slate-800 border-slate-400  focus:ring-transparent focus:border-slate-400"
       >
-        {options?.filter((option: any) => option.value === selected)[0]
-          ?.label || (
+        {selecteds.length > 0 ? (
+          <div className="overflow-x-auto flex whitespace-nowrap mr-5">
+            {options.map((e) => {
+              if (selecteds.includes(e.value)) {
+                return (
+                  <span className="bg-slate-200 rounded mr-1.5 px-1 py-0.5">
+                    {e.label}
+                  </span>
+                );
+              }
+              return null;
+            })}
+          </div>
+        ) : (
           <span className="text-slate-400">
-            {disabled ? "Disabled" : "Select an option"}
+            {disabled ? "Disabled" : "Select options"}
           </span>
         )}
 
-        {!selected && (
+        {selecteds.length === 0 && (
           <FontAwesomeIcon
             icon={faChevronDown}
             className={`w-3 h-3 text-slate-500 transform transition-transform duration-200 ${
@@ -93,7 +104,7 @@ const Select: FC<SelectProps> = ({
 
       {open && (
         <div
-          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-slate-800 ${
+          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterMultipleSelect text-slate-800 ${
             label ? "top-[66px]" : "top-11"
           }`}
         >
@@ -124,12 +135,11 @@ const Select: FC<SelectProps> = ({
               optionsState.map((option) => (
                 <div
                   onClick={() => {
-                    setOpen(false);
                     setOptionState(options);
                     onChange(option.value);
                   }}
                   className={`px-3 py-2 select-none cursor-pointer lg:hover:bg-slate-100 ${
-                    option.value === selected
+                    selecteds.includes(option.value)
                       ? "bg-slate-100 bg-opacity-70"
                       : ""
                   }`}
@@ -146,4 +156,4 @@ const Select: FC<SelectProps> = ({
   );
 };
 
-export default Select;
+export default MultipleSelect;

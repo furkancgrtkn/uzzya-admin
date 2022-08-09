@@ -1,14 +1,14 @@
 import { ReactElement, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Cookies from "universal-cookie";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import Header from "src/components/Typography/Header";
 import { useAppDispatch } from "src/hooks/redux/reduxHooks";
 import { setIsLogged } from "src/redux/features/user/userSlice";
-import Cookies from "universal-cookie";
-import { useRouter } from "next/router";
 
 type LoginInputs = {
   email: string;

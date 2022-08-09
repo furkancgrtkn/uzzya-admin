@@ -3,11 +3,11 @@ import React, { ReactNode } from "react";
 export default function Drawer({
   children,
   isOpen,
-  setIsOpen,
+  onClose,
 }: {
   children: ReactNode;
   isOpen: boolean;
-  setIsOpen: (e: boolean) => void;
+  onClose: () => void;
 }) {
   return (
     <div
@@ -18,7 +18,7 @@ export default function Drawer({
     >
       <div
         className={
-          " w-screen max-w-lg right-0 absolute bg-white h-full shadow-xl "
+          " w-screen max-w-lg right-0 absolute overflow-y-scroll bg-white h-full shadow-xl "
         }
       >
         {children}
@@ -26,7 +26,7 @@ export default function Drawer({
       <div
         className=" w-screen h-full "
         onClick={() => {
-          setIsOpen(false);
+          onClose();
         }}
       ></div>
     </div>

@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
 import PrivateRoute from "src/utils/auth/PrivateRoute";
 import Sidebar from "../Sidebar";
-export default function Default({ children }: { children: React.ReactNode }) {
+export default function Default({ children }: { children: ReactNode }) {
   return (
     <PrivateRoute>
       <>

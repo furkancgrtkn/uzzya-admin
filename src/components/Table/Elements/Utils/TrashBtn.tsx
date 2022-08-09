@@ -1,18 +1,32 @@
-import React, { FC } from "react";
+import React, { Dispatch, FC, ReactNode, SetStateAction } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import toast from "react-hot-toast";
-import axiosInstance from "src/utils/axiosInstance";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import axiosInstance from "src/utils/axiosInstance";
 
 const MySwal = withReactContent(Swal);
 interface TrashBtnProps {
   loadingDelete: boolean;
   id: string;
   endPoint: string;
-  setLoadingDelete: React.Dispatch<React.SetStateAction<boolean>>;
-  setTableRows: React.Dispatch<React.SetStateAction<any[] | undefined>>;
+  setLoadingDelete: Dispatch<SetStateAction<boolean>>;
+  setTableRows: Dispatch<
+    SetStateAction<
+      | {
+          render?: ReactNode;
+          selector: string;
+          data?:
+            | {
+                deleteEndpoint: string;
+                rowId: string;
+              }
+            | undefined;
+        }[][]
+      | undefined
+    >
+  >;
 }
 
 const TrashBtn: FC<TrashBtnProps> = ({
@@ -59,7 +73,7 @@ const TrashBtn: FC<TrashBtnProps> = ({
                     return prev?.filter(
                       (row) =>
                         row.filter((e: any) => e.selector === "jsonData")[0]
-                          .data.deleteId !== id
+                          ?.data?.rowId !== id
                     );
                   });
                   toast.success("Başarıyla silindi.");

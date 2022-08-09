@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "src/utils/axiosInstance";
-import { AttributeTypeType } from "./types";
+import { AttributeType } from "./types";
 
-export default function useAttributeTypes() {
-  const [data, setData] = useState<AttributeTypeType[] | undefined>();
+export default function useAttributes() {
+  const [data, setData] = useState<AttributeType[] | undefined>();
   const [error, setError] = useState<boolean>(false);
   const fetcher = async () => {
     setData(undefined);
     setError(false);
     try {
-      const { data } = await axiosInstance.post(`/attribute/type`, {
+      const { data } = await axiosInstance.post(`/attribute`, {
         select: {
           id: true,
-          title: true,
+          value: true,
+          attribute_type: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
         },
       });
       setData(data);

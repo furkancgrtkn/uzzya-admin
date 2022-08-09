@@ -19,7 +19,6 @@ import {
   TrashBtn,
 } from "./Elements";
 import Wrapper from "./Elements/Utils/Wrapper";
-import { useRouter } from "next/router";
 
 export interface DataTableProps {
   className?: string;
@@ -27,18 +26,17 @@ export interface DataTableProps {
     render?: ReactNode;
     selector: string;
     data?: {
-      editLink: string;
       deleteEndpoint: string;
-      deleteId: string;
+      rowId: string;
     };
   }[][];
   cols: { row: string; name: string }[];
-  setEditRow: Dispatch<SetStateAction<string | number | undefined>>;
+  onClickEdit: (e: string | number) => void;
 }
 
 const DataTable: FC<DataTableProps> = ({
   className,
-  setEditRow,
+  onClickEdit,
   cols,
   rows,
 }) => {
@@ -75,9 +73,9 @@ const DataTable: FC<DataTableProps> = ({
                   <div className={"ml-auto flex w-min"}>
                     <button
                       onClick={() =>
-                        setEditRow(
+                        onClickEdit(
                           row.filter((r) => r.selector === "jsonData")[0].data
-                            ?.deleteId
+                            ?.rowId!
                         )
                       }
                       className="flex mr-2 disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200"
@@ -91,7 +89,7 @@ const DataTable: FC<DataTableProps> = ({
                       }
                       id={
                         row.filter((r) => r.selector === "jsonData")[0].data
-                          ?.deleteId as string
+                          ?.rowId as string
                       }
                       setLoadingDelete={setLoadingDelete}
                       loadingDelete={loadingDelete}

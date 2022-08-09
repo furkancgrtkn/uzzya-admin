@@ -8,19 +8,19 @@ import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
-import useCategories from "src/hooks/api/category/useCategories";
-import { CreateEditCategory } from "src/views/forms";
+import useProducts from "src/hooks/api/products/useProducts";
+import CreateEditProduct from "src/views/forms/CreateEditProduct";
 
-const Categories = () => {
+const Products = () => {
   const [rows, setRows] = useState<DataTableProps["rows"] | null>();
   const [editRow, setEditRow] = useState<string | number>();
   const [createOpen, setCreateOpen] = useState<boolean>(false);
 
-  const { data: categories, isError, reFetch } = useCategories();
-
+  const { data: products, isError, reFetch } = useProducts();
+  console.log(products);
   const cols = [
     {
-      name: "Kategori",
+      name: "Ürün Adı",
       row: "title",
     },
     {
@@ -28,12 +28,8 @@ const Categories = () => {
       row: "slug",
     },
     {
-      name: "Üst Kategori",
-      row: "parent",
-    },
-    {
-      name: "Alt Kategori",
-      row: "child",
+      name: "Kategori",
+      row: "category",
     },
     {
       name: "Görseller",
@@ -42,9 +38,9 @@ const Categories = () => {
   ];
 
   useEffect(() => {
-    if (categories) {
+    if (products) {
       setRows(
-        categories.map((e) => {
+        products.map((e) => {
           return [
             {
               render: e.title,
@@ -55,23 +51,20 @@ const Categories = () => {
               selector: "slug",
             },
             {
-              render: e?.parent?.title || "-",
-              selector: "parent",
+              render: e?.category?.title || "-",
+              selector: "category",
             },
-            {
-              render: e?.children?.length || "-",
-              selector: "child",
-            },
+
             {
               render: (
                 <a
                   target={"_blank"}
-                  href={`${process.env.NEXT_APP_API_URL}/${e.image}`}
+                  href={`${process.env.NEXT_APP_API_URL}/${e.thumbnail}`}
                   rel="noreferrer"
                 >
                   <img
                     className="min-w-[32px] border border-slate-400 rounded overflow-hidden w-8 h-8 object-cover"
-                    src={`${process.env.NEXT_APP_API_URL}/${e.image}`}
+                    src={`${process.env.NEXT_APP_API_URL}/${e.thumbnail}`}
                     alt=""
                   />
                 </a>
@@ -80,7 +73,7 @@ const Categories = () => {
             },
             {
               data: {
-                deleteEndpoint: `/category/delete/${e.id}`,
+                deleteEndpoint: `/product/delete/${e.id}`,
                 rowId: e.id,
               },
               selector: "jsonData",
@@ -89,7 +82,7 @@ const Categories = () => {
         })
       );
     }
-  }, [categories]);
+  }, [products]);
 
   if (isError) {
     return <div>Error</div>;
@@ -111,14 +104,14 @@ const Categories = () => {
                 icon={faPlus}
                 className="w-4 h-4 mr-2 text-slate-700"
               />
-              <span className="text-slate-800">Kategori Oluştur</span>
+              <span className="text-slate-800">Ürün Oluştur</span>
             </Button>
           </>
         }
-        title={"Kategoriler"}
+        title={"Ürünler"}
       />
       <div className="p-4">
-        {categories && rows ? (
+        {products && rows ? (
           <DataTable
             onClickEdit={(e) => {
               setEditRow(e);
@@ -133,7 +126,7 @@ const Categories = () => {
         )}
       </div>
 
-      {categories && (
+      {products && (
         <Drawer
           isOpen={createOpen}
           onClose={() => {
@@ -141,9 +134,8 @@ const Categories = () => {
             setCreateOpen(false);
           }}
         >
-          <CreateEditCategory
-            categories={categories}
-            category={categories?.find((e) => e.id === editRow)}
+          <CreateEditProduct
+            product={products.find((e) => e.id === editRow)}
             setRows={() => {
               reFetch().then(() => {
                 setEditRow(undefined);
@@ -157,8 +149,8 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default Products;
 
-Categories.getLayout = function getLayout(page: ReactElement) {
+Products.getLayout = function getLayout(page: ReactElement) {
   return <Default>{page}</Default>;
 };

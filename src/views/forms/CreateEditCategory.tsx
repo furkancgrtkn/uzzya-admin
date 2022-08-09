@@ -1,18 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDropzone } from "react-dropzone";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import * as yup from "yup";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
-import Select from "src/components/FormElements/Select";
+import { Select } from "src/components/FormElements/Select";
 import PageHeader from "src/components/PageHeader";
-import axiosInstance from "src/utils/axiosInstance";
-import * as yup from "yup";
 import { Category } from "src/hooks/api/category/types";
+import axiosInstance from "src/utils/axiosInstance";
 
-interface CreateCategoryRequest {
+interface CreateEditCategoryRequest {
   title: string;
   slug: string;
   parent_id: string;
@@ -26,24 +26,26 @@ const schema = yup
     parent_id: yup.string().notRequired().nullable(),
   })
   .required();
-const CreateCategory = ({
+const CreateEditCategory = ({
   categories,
   setRows,
+  category,
 }: {
   categories: Category[] | undefined;
   setRows: () => void;
+  category: Category | undefined;
 }) => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
   const [files, setFiles] = useState<any>([]);
+  const [currentImage, setCurrentImage] = useState<string | undefined>();
 
   const {
     register,
-    clearErrors,
     setValue,
-    watch,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm<CreateCategoryRequest>({
+  } = useForm<CreateEditCategoryRequest>({
     resolver: yupResolver(schema),
   });
 
@@ -63,37 +65,65 @@ const CreateCategory = ({
     },
   });
 
-  const onSubmit: SubmitHandler<CreateCategoryRequest> = async (data) => {
-    if (files.length > 0) {
-      setPostLoad(true);
-      try {
-        const { data: cat } = await axiosInstance.post("/category/create", {
-          data,
+  const onSubmit: SubmitHandler<CreateEditCategoryRequest> = async (data) => {
+    setPostLoad(true);
+    try {
+      if (category) {
+        const { data: cat } = await axiosInstance.post("/category/update", {
+          data: {
+            ...data,
+            image: currentImage,
+          },
+          where: { id: category?.id },
           select: { id: true },
         });
-        const formData = new FormData();
-        Object.values(files).map((file: any) => {
-          formData.append("files", file);
-          return null;
-        });
-        await axiosInstance.post(
-          `/upload/images?model=category&id=${cat.id}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        toast.success("İşlem Başarılı");
-        setRows();
-      } catch (error) {
-        toast.error("Hata");
-      } finally {
-        setPostLoad(false);
+        if (files.length > 0) {
+          const formData = new FormData();
+          Object.values(files).map((file: any) => {
+            formData.append("files", file);
+            return null;
+          });
+          await axiosInstance.post(
+            `/upload/images?model=category&id=${cat.id}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+        }
+      } else {
+        if (files.length > 0) {
+          const { data: cat } = await axiosInstance.post("/category/create", {
+            data,
+            select: { id: true },
+          });
+          const formData = new FormData();
+          Object.values(files).map((file: any) => {
+            formData.append("files", file);
+            return null;
+          });
+          await axiosInstance.post(
+            `/upload/images?model=category&id=${cat.id}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+        } else {
+          toast.error("Lütfen Görsel Ekleyiniz");
+          return;
+        }
       }
-    } else {
-      toast.error("Lütfen Görsel Ekleyiniz");
+      toast.success("İşlem Başarılı");
+      setRows();
+    } catch (error) {
+      toast.error("Hata");
+    } finally {
+      setPostLoad(false);
     }
   };
 
@@ -101,6 +131,15 @@ const CreateCategory = ({
     return () =>
       files.forEach((file: any) => URL.revokeObjectURL(file.preview));
   }, [files]);
+
+  useEffect(() => {
+    if (category) {
+      setValue("title", category.title);
+      setValue("parent_id", category.parent?.id);
+      setValue("slug", category.slug);
+      setCurrentImage(category.image);
+    }
+  }, [category, setValue]);
 
   return categories ? (
     <>
@@ -122,27 +161,38 @@ const CreateCategory = ({
             label="Slug"
           />
 
-          <Select
-            label="Üst Kategori"
-            clearError={() => clearErrors("parent_id")}
-            value={() => {
-              return watch("parent_id");
-            }}
-            setValue={(val) => setValue("parent_id", val)}
-            inputProps={{
-              ...register("parent_id"),
-            }}
-            options={categories.map((el) => {
-              return {
-                id: el.id,
-                value: el.id,
-                label: el.title,
-              };
-            })}
-            error={errors.parent_id?.message}
+          <Controller
+            control={control}
+            name="parent_id"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Select
+                label="Üst Kategori"
+                onChange={(e) => {
+                  onChange(e);
+                }}
+                selected={value}
+                options={categories.map((el) => {
+                  return {
+                    value: el.id,
+                    label: el.title,
+                    filterValue: el.title,
+                  };
+                })}
+                error={error?.message}
+              />
+            )}
           />
 
           <div className="w-full">
+            {currentImage && (
+              <div className="mb-2">
+                <img
+                  className="min-w-[96px] border border-slate-400 rounded overflow-hidden w-24 h-24 object-cover"
+                  src={`${process.env.NEXT_APP_API_URL}/${currentImage}`}
+                  alt=""
+                />
+              </div>
+            )}
             <div
               className="border cursor-pointer border-slate-400 p-6 rounded overflow-hidden"
               {...getRootProps()}
@@ -186,4 +236,4 @@ const CreateCategory = ({
     </>
   ) : null;
 };
-export default CreateCategory;
+export default CreateEditCategory;

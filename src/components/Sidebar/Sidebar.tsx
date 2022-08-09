@@ -1,9 +1,7 @@
 import {
   faArrowRightToBracket,
-  faDumpster,
-  faHammer,
   faListOl,
-  faUser,
+  faShop,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,19 +12,9 @@ export default function Sidebar() {
   const router = useRouter();
   const navigation = [
     {
-      id: 1,
-      href: "/urunler",
-      icon: <FontAwesomeIcon icon={faDumpster} className={`w-4 h-4 p-1`} />,
-    },
-    {
       id: 2,
-      href: "/ana-ozellikler",
-      icon: <FontAwesomeIcon icon={faWrench} className={`w-4 h-4 p-1`} />,
-    },
-    {
-      id: 3,
-      href: "/ozellikler",
-      icon: <FontAwesomeIcon icon={faHammer} className={`w-4 h-4 p-1`} />,
+      href: "/products",
+      icon: <FontAwesomeIcon icon={faShop} className={`w-4 h-4 p-1`} />,
     },
     {
       id: 4,
@@ -34,9 +22,9 @@ export default function Sidebar() {
       icon: <FontAwesomeIcon icon={faListOl} className={`w-4 h-4 p-1`} />,
     },
     {
-      id: 4,
-      href: "/uyeler",
-      icon: <FontAwesomeIcon icon={faUser} className={`w-4 h-4 p-1`} />,
+      id: 2,
+      href: "/attributes",
+      icon: <FontAwesomeIcon icon={faWrench} className={`w-4 h-4 p-1`} />,
     },
   ];
   return (
