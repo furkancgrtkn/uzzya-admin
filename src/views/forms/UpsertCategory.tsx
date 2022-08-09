@@ -121,7 +121,10 @@ const UpsertCategory = ({
 
   return categories ? (
     <>
-      <PageHeader className="pl-4" title={"Kategori Oluştur"} />
+      <PageHeader
+        className="pl-4"
+        title={category ? "Kategoriyi Güncelle" : "Kategori Oluştur"}
+      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"
@@ -206,7 +209,7 @@ const UpsertCategory = ({
               type="submit"
               className="font-medium px-3 py-2 rounded text-white bg-brand-green"
             >
-              Oluştur
+              {category ? "Güncelle" : "Oluştur"}
             </Button>
           </div>
         </form>

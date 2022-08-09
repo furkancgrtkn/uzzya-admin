@@ -14,7 +14,7 @@ import {
 } from "src/hooks/api/attributes/types";
 import axiosInstance from "src/utils/axiosInstance";
 
-interface CreateEditAttributeRequest {
+interface UpsertAttributeRequest {
   attribute_type_id: string;
   value?: string;
 }
@@ -26,7 +26,7 @@ const schema = yup
     value: yup.string().required("Bu Alan Zorunludur."),
   })
   .required();
-const CreateEditAttribute = ({
+const UpsertAttribute = ({
   setRows,
   attributeTypes,
   attribute,
@@ -43,7 +43,7 @@ const CreateEditAttribute = ({
     control,
     setValue,
     formState: { errors },
-  } = useForm<CreateEditAttributeRequest>({
+  } = useForm<UpsertAttributeRequest>({
     resolver: yupResolver(schema),
   });
 
@@ -54,21 +54,25 @@ const CreateEditAttribute = ({
     }
   }, [attribute, setValue]);
 
-  const onSubmit: SubmitHandler<CreateEditAttributeRequest> = async (data) => {
+  const onSubmit: SubmitHandler<UpsertAttributeRequest> = async (data) => {
     setPostLoad(true);
     try {
-      if (attribute) {
-        await axiosInstance.post("/attribute/update", {
-          data,
-          where: {
-            id: attribute.id,
-          },
-        });
-      } else {
-        await axiosInstance.post("/attribute/create", {
-          data,
-        });
-      }
+      await axiosInstance.post("/attribute/upsert", {
+        data,
+        create: {
+          ...data,
+        },
+        update: {
+          ...data,
+        },
+        select: {
+          id: true,
+        },
+        where: {
+          id: attribute?.id || "",
+        },
+      });
+
       toast.success("İşlem Başarılı");
       setRows();
     } catch (error) {
@@ -80,7 +84,10 @@ const CreateEditAttribute = ({
 
   return (
     <>
-      <PageHeader className="pl-4" title={"Özellik Oluştur"} />
+      <PageHeader
+        className="pl-4"
+        title={attribute ? "Özelliği Güncelle" : "Özellik Oluştur"}
+      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"
@@ -120,7 +127,7 @@ const CreateEditAttribute = ({
               type="submit"
               className="font-medium px-3 py-2 rounded text-white bg-brand-green"
             >
-              Oluştur
+              {attribute ? "Güncelle" : "Oluştur"}
             </Button>
           </div>
         </form>
@@ -128,4 +135,4 @@ const CreateEditAttribute = ({
     </>
   );
 };
-export default CreateEditAttribute;
+export default UpsertAttribute;

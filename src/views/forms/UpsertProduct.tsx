@@ -186,7 +186,10 @@ const UpsertProduct = ({
 
   return attributes && categories && products ? (
     <>
-      <PageHeader className="pl-4" title={"Ürün Oluştur"} />
+      <PageHeader
+        className="pl-4"
+        title={product ? "Ürünü Güncelle" : "Ürün Oluştur"}
+      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"
@@ -466,7 +469,7 @@ const UpsertProduct = ({
                 type="submit"
                 className="font-medium px-3 py-2 rounded text-white bg-brand-green"
               >
-                Oluştur
+                {product ? "Güncelle" : "Oluştur"}
               </Button>
             </div>
           </>

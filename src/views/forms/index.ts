@@ -1,11 +1,6 @@
-import CreateEditAttribute from "./CreateEditAttribute";
-import CreateEditAttributeType from "./CreateEditAttributeType";
+import UpsertAttribute from "./UpsertAttribute";
+import UpsertAttributeType from "./UpsertAttributeType";
 import UpsertCategory from "./UpsertCategory";
 import UpsertProduct from "./UpsertProduct";
 
-export {
-  UpsertCategory,
-  CreateEditAttributeType,
-  CreateEditAttribute,
-  UpsertProduct,
-};
+export { UpsertCategory, UpsertAttribute, UpsertAttributeType, UpsertProduct };

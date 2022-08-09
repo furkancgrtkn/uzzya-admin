@@ -9,50 +9,41 @@ import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { LinkTabs } from "src/components/Tabs";
-import useAttributes from "src/hooks/api/attributes/useAttributes";
 import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
-import { UpsertAttribute } from "src/views/forms";
-const Attributes = () => {
-  const [attributeRows, setAttributeRows] = useState<
+import { UpsertAttributeType } from "src/views/forms";
+const AttributeTypes = () => {
+  const [attributeTypeRows, setAttributeTypeRows] = useState<
     DataTableProps["rows"] | null
   >();
-  const [editAttributeRow, setEditAttributeRow] = useState<string | number>();
-
-  const [attributeDrawerOpen, setAttributeDrawerOpen] =
+  const [editAttributeTypeRow, setEditAttributeTypeRow] = useState<
+    string | number
+  >();
+  const [attributeTypeDrawerOpen, setAttributeTypeDrawerOpen] =
     useState<boolean>(false);
 
-  const { data: attributeTypes, isError: isAttributeTypesError } =
-    useAttributeTypes();
   const {
-    data: attributes,
-    isError: isAttributesError,
-    reFetch: attributesReFetch,
-  } = useAttributes();
+    data: attributeTypes,
+    isError: isAttributeTypesError,
+    reFetch: attributeTypesReFetch,
+  } = useAttributeTypes();
 
-  const attributeCols = [
+  const attributeTypeCols = [
     {
-      name: "Özellik Adı",
-      row: "value",
-    },
-    {
-      name: "Özellik Tipi",
-      row: "type",
+      name: "Ana Özellik Adı",
+      row: "title",
     },
   ];
 
   useEffect(() => {
-    if (attributes) {
-      setAttributeRows(
-        attributes.map((e) => {
+    if (attributeTypes) {
+      setAttributeTypeRows(
+        attributeTypes.map((e) => {
           return [
             {
-              render: e.value,
-              selector: "value",
+              render: e.title,
+              selector: "title",
             },
-            {
-              render: e.attribute_type.title,
-              selector: "type",
-            },
+
             {
               data: {
                 deleteEndpoint: `/attribute/type/delete/${e.id}`,
@@ -64,9 +55,9 @@ const Attributes = () => {
         })
       );
     }
-  }, [attributes]);
+  }, [attributeTypes]);
 
-  if (isAttributeTypesError || isAttributesError) {
+  if (isAttributeTypesError) {
     return <div>Error</div>;
   }
   return (
@@ -78,15 +69,15 @@ const Attributes = () => {
             <Button
               className="w-full px-4 border-l border-slate-400 hover:bg-slate-100"
               onClick={() => {
-                setEditAttributeRow(undefined);
-                setAttributeDrawerOpen(true);
+                setEditAttributeTypeRow(undefined);
+                setAttributeTypeDrawerOpen(true);
               }}
             >
               <FontAwesomeIcon
                 icon={faPlus}
                 className="w-4 h-4 mr-2 text-slate-700"
               />
-              <span className="text-slate-800">Özellik Oluştur</span>
+              <span className="text-slate-800">Ana Özellik Oluştur</span>
             </Button>
           </>
         }
@@ -101,47 +92,46 @@ const Attributes = () => {
         />
       </div>
       <div className="p-4">
-        {attributes && attributeRows ? (
+        {attributeTypes && attributeTypeRows ? (
           <DataTable
             onClickEdit={(e) => {
-              setEditAttributeRow(e);
-              setAttributeDrawerOpen(true);
+              setEditAttributeTypeRow(e);
+              setAttributeTypeDrawerOpen(true);
             }}
             className="mt-2"
-            rows={attributeRows}
-            cols={attributeCols}
+            rows={attributeTypeRows}
+            cols={attributeTypeCols}
           />
         ) : (
           <Loading />
         )}
       </div>
 
-      {attributeTypes && (
-        <Drawer
-          isOpen={attributeDrawerOpen}
-          onClose={() => {
-            setAttributeDrawerOpen(false);
-            setEditAttributeRow(undefined);
+      <Drawer
+        isOpen={attributeTypeDrawerOpen}
+        onClose={() => {
+          setAttributeTypeDrawerOpen(false);
+          setEditAttributeTypeRow(undefined);
+        }}
+      >
+        <UpsertAttributeType
+          attributeType={attributeTypes?.find(
+            (e) => e.id === editAttributeTypeRow
+          )}
+          setRows={() => {
+            attributeTypesReFetch().then(() => {
+              setAttributeTypeDrawerOpen(false);
+              setEditAttributeTypeRow(undefined);
+            });
           }}
-        >
-          <UpsertAttribute
-            attribute={attributes?.find((e) => e.id === editAttributeRow)}
-            attributeTypes={attributeTypes}
-            setRows={() => {
-              attributesReFetch().then(() => {
-                setAttributeDrawerOpen(false);
-                setEditAttributeRow(undefined);
-              });
-            }}
-          />
-        </Drawer>
-      )}
+        />
+      </Drawer>
     </>
   );
 };
 
-export default Attributes;
+export default AttributeTypes;
 
-Attributes.getLayout = function getLayout(page: ReactElement) {
+AttributeTypes.getLayout = function getLayout(page: ReactElement) {
   return <Default>{page}</Default>;
 };

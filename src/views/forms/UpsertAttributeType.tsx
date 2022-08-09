@@ -10,7 +10,7 @@ import PageHeader from "src/components/PageHeader";
 import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import axiosInstance from "src/utils/axiosInstance";
 
-interface CreateEditAttributeTypeRequest {
+interface UpsertAttributeTypeRequest {
   title: string;
 }
 
@@ -20,7 +20,7 @@ const schema = yup
     title: yup.string().required("Bu Alan Zorunludur."),
   })
   .required();
-const CreateEditAttributeType = ({
+const UpsertAttributeType = ({
   setRows,
   attributeType,
 }: {
@@ -34,7 +34,7 @@ const CreateEditAttributeType = ({
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<CreateEditAttributeTypeRequest>({
+  } = useForm<UpsertAttributeTypeRequest>({
     resolver: yupResolver(schema),
   });
 
@@ -44,23 +44,25 @@ const CreateEditAttributeType = ({
     }
   }, [attributeType, setValue]);
 
-  const onSubmit: SubmitHandler<CreateEditAttributeTypeRequest> = async (
-    data
-  ) => {
+  const onSubmit: SubmitHandler<UpsertAttributeTypeRequest> = async (data) => {
     setPostLoad(true);
     try {
-      if (attributeType) {
-        await axiosInstance.post("/attribute/type/update", {
-          data,
-          where: {
-            id: attributeType.id,
-          },
-        });
-      } else {
-        await axiosInstance.post("/attribute/type/create", {
-          data,
-        });
-      }
+      await axiosInstance.post("/attribute/type/upsert", {
+        data,
+        create: {
+          ...data,
+        },
+        update: {
+          ...data,
+        },
+        select: {
+          id: true,
+        },
+        where: {
+          id: attributeType?.id || "",
+        },
+      });
+
       toast.success("İşlem Başarılı");
       setRows();
     } catch (error) {
@@ -72,7 +74,12 @@ const CreateEditAttributeType = ({
 
   return (
     <>
-      <PageHeader className="pl-4" title={"Kategori Oluştur"} />
+      <PageHeader
+        className="pl-4"
+        title={
+          attributeType ? "Özellik Tipini Güncelle" : "Özellik Tipi Oluştur"
+        }
+      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"
@@ -90,7 +97,7 @@ const CreateEditAttributeType = ({
               type="submit"
               className="font-medium px-3 py-2 rounded text-white bg-brand-green"
             >
-              Oluştur
+              {attributeType ? "Güncelle" : "Oluştur"}
             </Button>
           </div>
         </form>
@@ -98,4 +105,4 @@ const CreateEditAttributeType = ({
     </>
   );
 };
-export default CreateEditAttributeType;
+export default UpsertAttributeType;

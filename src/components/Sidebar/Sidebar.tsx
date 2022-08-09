@@ -36,7 +36,7 @@ export default function Sidebar() {
           <Link key={item.id} href={item.href}>
             <a
               className={`${
-                router.asPath === item.href
+                router.asPath.includes(item.href)
                   ? "bg-brand-primaryLight bg-opacity-80 text-white"
                   : "text-slate-400 lg:lg:hover:text-white lg:lg:hover:bg-brand-primaryLight lg:lg:hover:bg-opacity-80"
               } group flex items-center px-2 py-2 text-sm font-medium rounded`}
