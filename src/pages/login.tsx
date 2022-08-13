@@ -81,7 +81,7 @@ const Login = () => {
           <Button
             type="submit"
             loading={load}
-            className="w-full mt-4 font-medium tracking-wider text-white bg-brand-primaryLight"
+            className="w-full px-4 py-2 mt-4 font-medium tracking-wider text-white bg-brand-primaryLight"
           >
             GİRİŞ YAP
           </Button>

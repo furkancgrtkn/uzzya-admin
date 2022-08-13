@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  FC,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Paragraph from "../Typography/Paragraph";
@@ -31,6 +24,7 @@ export interface DataTableProps {
     };
   }[][];
   cols: { row: string; name: string }[];
+  // eslint-disable-next-line no-unused-vars
   onClickEdit: (e: string | number) => void;
 }
 

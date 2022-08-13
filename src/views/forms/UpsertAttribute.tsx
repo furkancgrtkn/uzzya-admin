@@ -104,7 +104,7 @@ const UpsertAttribute = ({
             name="attribute_type_id"
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <Select
-                label="Üst Kategori"
+                label="Özellik Tipi"
                 onChange={(e) => {
                   onChange(e);
                 }}

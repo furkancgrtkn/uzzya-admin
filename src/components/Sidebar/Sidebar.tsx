@@ -2,6 +2,7 @@ import {
   faArrowRightToBracket,
   faListOl,
   faShop,
+  faTicketSimple,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +26,11 @@ export default function Sidebar() {
       id: 2,
       href: "/attributes",
       icon: <FontAwesomeIcon icon={faWrench} className={`w-4 h-4 p-1`} />,
+    },
+    {
+      id: 2,
+      href: "/orders",
+      icon: <FontAwesomeIcon icon={faTicketSimple} className={`w-4 h-4 p-1`} />,
     },
   ];
   return (
