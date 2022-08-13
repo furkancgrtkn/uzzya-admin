@@ -10,7 +10,29 @@ export default function useOrder(id: string) {
     setError(false);
     try {
       const { data } = await axiosInstance.post(`/order/unique/foradmin`, {
-        id: +orderId,
+        where: { id: +orderId },
+        include: {
+          shipping: true,
+          payment: true,
+          products: {
+            include: {
+              product: {
+                include: {
+                  category: true,
+                  attributes: {
+                    include: {
+                      attribute: {
+                        include: {
+                          attribute_type: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       });
       setData(data);
     } catch (error) {

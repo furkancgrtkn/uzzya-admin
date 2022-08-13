@@ -24,6 +24,7 @@ export interface DataTableProps {
     };
   }[][];
   cols: { row: string; name: string }[];
+  noDelete?: boolean;
   // eslint-disable-next-line no-unused-vars
   onClickEdit: (e: string | number) => void;
 }
@@ -32,6 +33,7 @@ const DataTable: FC<DataTableProps> = ({
   className,
   onClickEdit,
   cols,
+  noDelete,
   rows,
 }) => {
   const [tableRows, setTableRows] = useState<
@@ -72,23 +74,27 @@ const DataTable: FC<DataTableProps> = ({
                             ?.rowId!
                         )
                       }
-                      className="flex mr-2 disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200"
+                      className={`${
+                        noDelete ? "" : "mr-2"
+                      } flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
                     >
                       <FontAwesomeIcon icon={faPen} className={`w-3 h-3`} />
                     </button>
-                    <TrashBtn
-                      endPoint={
-                        row.filter((r) => r.selector === "jsonData")[0].data
-                          ?.deleteEndpoint as string
-                      }
-                      id={
-                        row.filter((r) => r.selector === "jsonData")[0].data
-                          ?.rowId as string
-                      }
-                      setLoadingDelete={setLoadingDelete}
-                      loadingDelete={loadingDelete}
-                      setTableRows={setTableRows}
-                    />
+                    {!noDelete && (
+                      <TrashBtn
+                        endPoint={
+                          row.filter((r) => r.selector === "jsonData")[0].data
+                            ?.deleteEndpoint as string
+                        }
+                        id={
+                          row.filter((r) => r.selector === "jsonData")[0].data
+                            ?.rowId as string
+                        }
+                        setLoadingDelete={setLoadingDelete}
+                        loadingDelete={loadingDelete}
+                        setTableRows={setTableRows}
+                      />
+                    )}
                   </div>
                 </Col>
               )}

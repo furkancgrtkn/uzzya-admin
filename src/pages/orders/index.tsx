@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
@@ -25,10 +26,6 @@ const Orders = () => {
       row: "updated_at",
     },
     {
-      name: "Yorum/Puan",
-      row: "comment",
-    },
-    {
       name: "Tutar",
       row: "paid",
     },
@@ -48,13 +45,10 @@ const Orders = () => {
               selector: "status",
             },
             {
-              render: e.updated_at.toString(),
+              render: new Date(e.updated_at).toLocaleDateString(),
               selector: "updated_at",
             },
-            {
-              render: e.comment ? e.comment + " " + e.rate : "-",
-              selector: "comment",
-            },
+
             {
               render: e.payment.iyzicoJson.paidPrice + " TRY",
               selector: "paid",
@@ -71,7 +65,7 @@ const Orders = () => {
       );
     }
   }, [orders]);
-
+  const router = useRouter();
   if (isError) {
     return <div>Error</div>;
   }
@@ -81,7 +75,10 @@ const Orders = () => {
       <div className="p-4">
         {orders && rows ? (
           <DataTable
-            onClickEdit={() => {}}
+            onClickEdit={(e) => {
+              router.push(`/orders/${e}`);
+            }}
+            noDelete
             className="mt-2"
             rows={rows}
             cols={cols}
