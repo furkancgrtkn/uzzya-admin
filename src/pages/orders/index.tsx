@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useEffect, useState } from "react";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
@@ -14,20 +16,24 @@ const Orders = () => {
 
   const cols = [
     {
-      name: "Email",
-      row: "email",
-    },
-    {
       name: "Durum",
       row: "status",
+      visible: true,
     },
     {
       name: "Tarih",
       row: "updated_at",
+      visible: true,
     },
     {
       name: "Tutar",
       row: "paid",
+      visible: true,
+    },
+    {
+      name: "Row Options",
+      row: "options",
+      visible: false,
     },
   ];
 
@@ -36,10 +42,6 @@ const Orders = () => {
       setRows(
         orders.map((e) => {
           return [
-            {
-              render: e.email,
-              selector: "email",
-            },
             {
               render: e.status.toString(),
               selector: "status",
@@ -54,16 +56,23 @@ const Orders = () => {
               selector: "paid",
             },
             {
-              data: {
-                deleteEndpoint: `/category/delete/${e.id}`,
-                rowId: e.id.toString(),
-              },
-              selector: "jsonData",
+              render: (
+                <div className={"ml-auto flex w-min"}>
+                  <button
+                    onClick={() => router.push(`/orders/${e.id}`)}
+                    className={`flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
+                  >
+                    <FontAwesomeIcon icon={faEye} className={`w-3 h-3`} />
+                  </button>
+                </div>
+              ),
+              selector: "options",
             },
           ];
         })
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders]);
   const router = useRouter();
   if (isError) {
@@ -74,15 +83,7 @@ const Orders = () => {
       <PageHeader className="pl-4" title={"Siparişler"} />
       <div className="p-4">
         {orders && rows ? (
-          <DataTable
-            onClickEdit={(e) => {
-              router.push(`/orders/${e}`);
-            }}
-            noDelete
-            className="mt-2"
-            rows={rows}
-            cols={cols}
-          />
+          <DataTable className="mt-2" rows={rows} cols={cols} />
         ) : (
           <Loading />
         )}

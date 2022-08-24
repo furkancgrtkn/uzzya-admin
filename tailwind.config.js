@@ -11,9 +11,14 @@ module.exports = {
       },
       colors: {
         brand: {
-          primary: "#283149",
-          primaryLight: "#404B69",
-          background: "#fafafa",
+          palette: {
+            primary: "#437EFD",
+          },
+          black: {
+            primary: "#484848",
+            secondary: "#787878",
+          },
+          background: "#FAFBFC",
           green: "#3ACEA0",
           yellow: "#fb9871",
           red: "#F73859",

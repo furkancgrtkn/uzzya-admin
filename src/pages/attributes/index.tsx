@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useEffect, useState } from "react";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
@@ -8,6 +8,7 @@ import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
+import { TrashBtn } from "src/components/Table/Elements";
 import { LinkTabs } from "src/components/Tabs";
 import useAttributes from "src/hooks/api/attributes/useAttributes";
 import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
@@ -33,10 +34,17 @@ const Attributes = () => {
     {
       name: "Özellik Adı",
       row: "value",
+      visible: true,
     },
     {
       name: "Özellik Tipi",
       row: "type",
+      visible: true,
+    },
+    {
+      name: "Row Options",
+      row: "options",
+      visible: false,
     },
   ];
 
@@ -46,6 +54,10 @@ const Attributes = () => {
         attributes.map((e) => {
           return [
             {
+              id: e.id,
+              selector: "id",
+            },
+            {
               render: e.value,
               selector: "value",
             },
@@ -54,11 +66,31 @@ const Attributes = () => {
               selector: "type",
             },
             {
-              data: {
-                deleteEndpoint: `/attribute/type/delete/${e.id}`,
-                rowId: e.id,
-              },
-              selector: "jsonData",
+              render: (
+                <div className={"ml-auto flex w-min"}>
+                  <button
+                    onClick={() => {
+                      setEditAttributeRow(e.id);
+                      setAttributeDrawerOpen(true);
+                    }}
+                    className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
+                  >
+                    <FontAwesomeIcon icon={faPen} className={`w-3 h-3`} />
+                  </button>
+                  <TrashBtn
+                    endPoint={`/attribute/delete/${e.id}`}
+                    onSuccess={() => {
+                      setAttributeRows((prev) =>
+                        prev?.filter(
+                          (p) =>
+                            p.filter((r) => r.selector === "id")[0].id !== e.id
+                        )
+                      );
+                    }}
+                  />
+                </div>
+              ),
+              selector: "options",
             },
           ];
         })
@@ -76,7 +108,7 @@ const Attributes = () => {
         actions={
           <>
             <Button
-              className="w-full px-4 border-l border-slate-400 hover:bg-slate-100"
+              className="w-full px-4 border-l hover:bg-slate-100"
               onClick={() => {
                 setEditAttributeRow(undefined);
                 setAttributeDrawerOpen(true);
@@ -103,10 +135,6 @@ const Attributes = () => {
       <div className="p-4">
         {attributes && attributeRows ? (
           <DataTable
-            onClickEdit={(e) => {
-              setEditAttributeRow(e);
-              setAttributeDrawerOpen(true);
-            }}
             className="mt-2"
             rows={attributeRows}
             cols={attributeCols}

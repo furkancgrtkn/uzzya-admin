@@ -223,6 +223,18 @@
     lodash.isplainobject "^4.0.6"
     lodash.merge "^4.6.2"
 
+"@tanstack/react-table@^8.5.11":
+  version "8.5.11"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.5.11.tgz#544f551f15412087edfc2df01bed9697aab4651f"
+  integrity sha512-bIegBJ3VPUX3Z7rMnFEnTRCRgPccTsciilQA1ib/pA6M7Qq1boTNPjNjSbEHmBKytaxPrPfcUfzkZLogYtvu3g==
+  dependencies:
+    "@tanstack/table-core" "8.5.11"
+
+"@tanstack/table-core@8.5.11":
+  version "8.5.11"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.5.11.tgz#a23178a097df4b0b64bdfa6f79e6d8933e97c7f7"
+  integrity sha512-ZN61ockLaIAiiPbZfMKT2S03nbWx28OHg/nAiDnNfmN4QmAMcdwVajPn2QQwnNVGAr4jS4nbhbYzCcjq8livXQ==
+
 "@types/cookie@^0.3.3":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.3.3.tgz#85bc74ba782fb7aa3a514d11767832b0e3bc6803"

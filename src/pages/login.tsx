@@ -3,12 +3,12 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Cookies from "universal-cookie";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import Header from "src/components/Typography/Header";
 import { useAppDispatch } from "src/hooks/redux/reduxHooks";
 import { setIsLogged } from "src/redux/features/user/userSlice";
+import Cookies from "universal-cookie";
 
 type LoginInputs = {
   email: string;
@@ -81,7 +81,7 @@ const Login = () => {
           <Button
             type="submit"
             loading={load}
-            className="w-full px-4 py-2 mt-4 font-medium tracking-wider text-white bg-brand-primaryLight"
+            className="w-full px-4 py-2 mt-4 font-medium tracking-wider text-white bg-brand-palette-primary"
           >
             GİRİŞ YAP
           </Button>

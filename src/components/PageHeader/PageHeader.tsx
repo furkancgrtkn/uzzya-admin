@@ -10,11 +10,11 @@ interface PageHeaderProps {
 const PageHeader: FC<PageHeaderProps> = ({ title, className, actions }) => {
   return (
     <div
-      className={`flex w-full h-[48px] items-center ${
+      className={`flex bg-white w-full h-[48px] items-center ${
         title ? "justify-between" : "justify-end"
-      } border-b border-slate-400 ${className || ""}`}
+      } border-b ${className || ""}`}
     >
-      {title && <Header variant="h5">{title}</Header>}
+      {title && <Header variant="h6">{title}</Header>}
       {actions && <div className="h-[47px] flex">{actions}</div>}
     </div>
   );

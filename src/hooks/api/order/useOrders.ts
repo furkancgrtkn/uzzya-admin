@@ -12,7 +12,6 @@ export default function useOrders() {
       const { data } = await axiosInstance.post(`/order`, {
         select: {
           id: true,
-          email: true,
           status: true,
           updated_at: true,
           comment: true,

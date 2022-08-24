@@ -1,10 +1,10 @@
+/* eslint-disable no-unused-vars */
+import { ReactElement, ReactNode } from "react";
+import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import { store } from "src/redux/store";
-import Default from "src/components/Layout/Default";
-import { NextPage } from "next";
-import { ReactElement, ReactNode } from "react";
 import "../../styles/globals.css";
 
 export type NextPageWithLayout = NextPage & {

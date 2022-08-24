@@ -1,41 +1,18 @@
-import React, { Dispatch, FC, ReactNode, SetStateAction } from "react";
+import React, { FC, useState } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import toast from "react-hot-toast";
+import axiosInstance from "src/utils/axiosInstance";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import axiosInstance from "src/utils/axiosInstance";
 
 const MySwal = withReactContent(Swal);
 interface TrashBtnProps {
-  loadingDelete: boolean;
-  id: string;
   endPoint: string;
-  setLoadingDelete: Dispatch<SetStateAction<boolean>>;
-  setTableRows: Dispatch<
-    SetStateAction<
-      | {
-          render?: ReactNode;
-          selector: string;
-          data?:
-            | {
-                deleteEndpoint: string;
-                rowId: string;
-              }
-            | undefined;
-        }[][]
-      | undefined
-    >
-  >;
+  onSuccess: () => void;
 }
 
-const TrashBtn: FC<TrashBtnProps> = ({
-  setLoadingDelete,
-  loadingDelete,
-  id,
-  endPoint,
-  setTableRows,
-}) => {
+const TrashBtn: FC<TrashBtnProps> = ({ onSuccess, endPoint }) => {
   const customSwal = MySwal.mixin({
     customClass: {
       confirmButton:
@@ -44,7 +21,7 @@ const TrashBtn: FC<TrashBtnProps> = ({
     },
     buttonsStyling: false,
   });
-
+  const [loadingDelete, setLoadingDelete] = useState(false);
   return (
     <button
       disabled={loadingDelete}
@@ -69,13 +46,7 @@ const TrashBtn: FC<TrashBtnProps> = ({
               axiosInstance
                 .delete(endPoint)
                 .then(() => {
-                  setTableRows((prev) => {
-                    return prev?.filter(
-                      (row) =>
-                        row.filter((e: any) => e.selector === "jsonData")[0]
-                          ?.data?.rowId !== id
-                    );
-                  });
+                  onSuccess();
                   toast.success("Başarıyla silindi.");
                 })
                 .catch((err) => {

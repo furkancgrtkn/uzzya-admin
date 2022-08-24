@@ -35,7 +35,7 @@ export default function Sidebar() {
   ];
   return (
     <div
-      className={`h-full fixed z-20 top-0 left-0 bg-brand-primary min-h-screen w-[56px] py-4 px-2`}
+      className={`h-full fixed z-20 border-r top-0 left-0 bg-white min-h-screen w-[56px] py-4 px-2`}
     >
       <nav className="space-y-1 select-none">
         {navigation.map((item) => (
@@ -43,8 +43,8 @@ export default function Sidebar() {
             <a
               className={`${
                 router.asPath.includes(item.href)
-                  ? "bg-brand-primaryLight bg-opacity-80 text-white"
-                  : "text-slate-400 lg:lg:hover:text-white lg:lg:hover:bg-brand-primaryLight lg:lg:hover:bg-opacity-80"
+                  ? "bg-brand-palette-primary text-white"
+                  : "text-brand-black-secondary lg:hover:text-white lg:hover:bg-brand-palette-primary"
               } group flex items-center px-2 py-2 text-sm font-medium rounded`}
             >
               {item.icon}
@@ -56,7 +56,7 @@ export default function Sidebar() {
         onClick={async () => {
           localStorage.clear();
         }}
-        className={`text-slate-400 mt-1 w-full lg:lg:hover:text-white lg:lg:hover:bg-brand-primaryLight lg:lg:hover:bg-opacity-80 group flex items-center px-2 py-2 text-sm font-medium rounded`}
+        className={`text-brand-black-secondary mt-1 w-full lg:hover:text-white lg:hover:bg-brand-palette-primary group flex items-center px-2 py-2 text-sm font-medium rounded`}
       >
         <FontAwesomeIcon
           icon={faArrowRightToBracket}

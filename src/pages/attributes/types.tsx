@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useEffect, useState } from "react";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
@@ -8,6 +8,7 @@ import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
+import { TrashBtn } from "src/components/Table/Elements";
 import { LinkTabs } from "src/components/Tabs";
 import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
 import { UpsertAttributeType } from "src/views/forms";
@@ -31,6 +32,12 @@ const AttributeTypes = () => {
     {
       name: "Ana Özellik Adı",
       row: "title",
+      visible: true,
+    },
+    {
+      name: "Row Options",
+      row: "options",
+      visible: false,
     },
   ];
 
@@ -40,16 +47,39 @@ const AttributeTypes = () => {
         attributeTypes.map((e) => {
           return [
             {
+              id: e.id,
+              selector: "id",
+            },
+            {
               render: e.title,
               selector: "title",
             },
-
             {
-              data: {
-                deleteEndpoint: `/attribute/type/delete/${e.id}`,
-                rowId: e.id,
-              },
-              selector: "jsonData",
+              render: (
+                <div className={"ml-auto flex w-min"}>
+                  <button
+                    onClick={() => {
+                      setEditAttributeTypeRow(e.id);
+                      setAttributeTypeDrawerOpen(true);
+                    }}
+                    className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
+                  >
+                    <FontAwesomeIcon icon={faPen} className={`w-3 h-3`} />
+                  </button>
+                  <TrashBtn
+                    endPoint={`/attribute/type/delete/${e.id}`}
+                    onSuccess={() => {
+                      setAttributeTypeRows((prev) =>
+                        prev?.filter(
+                          (p) =>
+                            p.filter((r) => r.selector === "id")[0].id !== e.id
+                        )
+                      );
+                    }}
+                  />
+                </div>
+              ),
+              selector: "options",
             },
           ];
         })
@@ -67,7 +97,7 @@ const AttributeTypes = () => {
         actions={
           <>
             <Button
-              className="w-full px-4 border-l border-slate-400 hover:bg-slate-100"
+              className="w-full px-4 border-l hover:bg-slate-100"
               onClick={() => {
                 setEditAttributeTypeRow(undefined);
                 setAttributeTypeDrawerOpen(true);
@@ -94,10 +124,6 @@ const AttributeTypes = () => {
       <div className="p-4">
         {attributeTypes && attributeTypeRows ? (
           <DataTable
-            onClickEdit={(e) => {
-              setEditAttributeTypeRow(e);
-              setAttributeTypeDrawerOpen(true);
-            }}
             className="mt-2"
             rows={attributeTypeRows}
             cols={attributeTypeCols}
