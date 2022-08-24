@@ -10,6 +10,7 @@ import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { TrashBtn } from "src/components/Table/Elements";
+import IndeterminateCheckbox from "src/components/Table/utils/IndeterminateCheckbox";
 import { ProductType } from "src/hooks/api/products/types";
 import useProducts from "src/hooks/api/products/useProducts";
 import { UpsertProduct } from "src/views/forms";
@@ -23,6 +24,29 @@ const Products = () => {
   const columnHelper = createColumnHelper<ProductType>();
 
   const columns = [
+    columnHelper.display({
+      id: "select",
+      header: ({ table }) => (
+        <IndeterminateCheckbox
+          {...{
+            checked: table.getIsAllRowsSelected(),
+            indeterminate: table.getIsSomeRowsSelected(),
+            onChange: table.getToggleAllRowsSelectedHandler(),
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="px-1">
+          <IndeterminateCheckbox
+            {...{
+              checked: row.getIsSelected(),
+              indeterminate: row.getIsSomeSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
+        </div>
+      ),
+    }),
     columnHelper.accessor("title", {
       header: () => <span>BAŞLIK</span>,
       cell: (info) => info.getValue(),
