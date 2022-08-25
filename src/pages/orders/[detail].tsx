@@ -35,7 +35,7 @@ const InfoBox = ({
 }) => {
   return (
     <div
-      className={`flex flex-col p-2 border rounded border-slate-400 ${
+      className={`flex flex-col p-2 border rounded border-brand-black-secondaryLight ${
         className || ""
       }`}
     >
@@ -54,7 +54,7 @@ const ProductCard = ({
 }) => {
   return (
     <div
-      className={`flex flex-col p-2 border rounded border-slate-400 ${
+      className={`flex flex-col p-2 border rounded border-brand-black-secondaryLight ${
         className || ""
       }`}
     >

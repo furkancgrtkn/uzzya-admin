@@ -81,7 +81,7 @@ const Categories = () => {
           </>
         }
       />
-      <div className="p-4">
+      <div className="p-3">
         {categories ? (
           <DataTable rows={categories} columns={columns} />
         ) : (

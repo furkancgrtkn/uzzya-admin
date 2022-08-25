@@ -52,13 +52,15 @@ const Select: FC<SelectProps> = ({
         <button
           type="button"
           className={`absolute z-20 w-[14px] h-[14px] right-3 ${
-            label ? "top-[28px]" : "top-[7px]"
+            label ? "top-[34px]" : "top-[7px]"
           } transfrom`}
           onClick={() => {
             onChange(undefined);
           }}
         >
-          <XMarkIcon className={`w-[14px] h-[14px] text-slate-500`} />
+          <XMarkIcon
+            className={`w-[14px] stroke-2 h-[14px] text-brand-black-secondaryLight`}
+          />
         </button>
       )}
       <div
@@ -66,18 +68,18 @@ const Select: FC<SelectProps> = ({
           setOpen(disabled ? false : !open);
           setOptionState(options);
         }}
-        className="relative cursor-pointer z-10 flex items-center justify-between w-full h-[38px] px-3 text-sm font-normal bg-white border rounded text-slate-800 border-slate-400  focus:ring-transparent focus:border-slate-400"
+        className="relative cursor-pointer z-10 flex items-center justify-between w-full h-[38px] px-3 text-sm font-normal bg-white border rounded text-brand-black-primary border-brand-black-secondaryLight  focus:ring-transparent focus:border-brand-black-secondaryLight"
       >
         {options?.filter((option: any) => option.value === selected)[0]
           ?.label || (
-          <span className="text-slate-400">
+          <span className="text-brand-black-secondaryLight">
             {disabled ? "Disabled" : "Select an option"}
           </span>
         )}
 
         {!selected && (
           <ChevronDownIcon
-            className={`w-3 h-3 text-slate-500 transform transition-transform duration-200 ${
+            className={`w-3 h-3 text-brand-black-secondaryLight transform transition-transform duration-200 ${
               open ? "rotate-180" : "rotate-0"
             }`}
           />
@@ -88,7 +90,7 @@ const Select: FC<SelectProps> = ({
 
       {open && (
         <div
-          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-slate-800 ${
+          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-brand-black-primary ${
             label ? "top-[66px]" : "top-11"
           }`}
         >
@@ -104,15 +106,15 @@ const Select: FC<SelectProps> = ({
                 );
               }}
               placeholder="Search"
-              className="w-full px-2 py-1.5 text-xs border border-b-0 rounded-t border-slate-400"
+              className="w-full px-3 py-1.5 text-xs border border-b-0 rounded-t border-brand-black-secondaryLight"
             />
           </div>
 
           <div
-            className={`h-full overflow-y-scroll origin-top bg-white border rounded-b border-slate-400 max-h-60`}
+            className={`h-full overflow-y-scroll origin-top bg-white border rounded-b border-brand-black-secondaryLight max-h-60`}
           >
             {optionsState.length === 0 ? (
-              <div className={`px-2 py-2 text-xs select-none`}>
+              <div className={`px-3 py-2 text-xs select-none`}>
                 No options available
               </div>
             ) : (
@@ -123,9 +125,9 @@ const Select: FC<SelectProps> = ({
                     setOptionState(options);
                     onChange(option.value);
                   }}
-                  className={`px-3 py-2 select-none cursor-pointer lg:hover:bg-slate-100 ${
+                  className={`px-3 py-2 select-none cursor-pointer lg:hover:bg-brand-palette-primary/5 ${
                     option.value === selected
-                      ? "bg-slate-100 bg-opacity-70"
+                      ? "bg-brand-palette-primary/5"
                       : ""
                   }`}
                   key={option.value}

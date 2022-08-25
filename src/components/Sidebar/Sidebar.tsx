@@ -38,7 +38,7 @@ export default function Sidebar() {
   ];
   return (
     <div
-      className={`h-full z-20 border-r flex flex-col border-brand-black-secondaryLight top-0 left-0 bg-white min-h-screen p-2`}
+      className={`h-full z-20 border-r flex flex-col border-brand-black-secondaryLight top-0 left-0 bg-white min-h-screen p-3`}
     >
       <nav className="space-y-1.5 select-none">
         {navigation.map((item) => (
@@ -60,7 +60,7 @@ export default function Sidebar() {
         onClick={async () => {
           localStorage.clear();
         }}
-        className={`text-brand-black-secondary  leading-none min-w-[180px] justify-start px-2 py-1.5 lg:hover:text-white lg:hover:bg-brand-palette-primary group flex items-center mt-auto text-sm rounded`}
+        className={`text-brand-black-secondary  leading-none min-w-[180px] justify-start px-3 py-2 lg:hover:text-white lg:hover:bg-brand-palette-primary group flex items-center mt-auto text-sm rounded`}
       >
         <ArrowRightOnRectangleIcon className={`w-5 h-5`} />
         <span className="ml-2.5">Çıkış Yap</span>

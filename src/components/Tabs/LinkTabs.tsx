@@ -12,16 +12,14 @@ export function LinkTabs({
 }) {
   const router = useRouter();
   return (
-    <div className="flex space-x-6 border-slate-400 border-b">
-      {/* Loop through tab data and render button for each. */}
+    <div className="flex space-x-5 border-brand-black-secondaryLight text-brand-black-primary border-b">
       {tabsData.map((tab) => {
         return (
           <Link href={tab.href} key={tab.id}>
             <a
               className={`py-2 text-sm ${
-                router.asPath === tab.href ? "font-medium" : "opacity-50"
+                router.asPath === tab.href ? "" : "opacity-40"
               }`}
-              // Change the active tab on click.
             >
               {tab.label}
             </a>

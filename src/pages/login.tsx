@@ -53,7 +53,7 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="w-[360px] p-5 bg-white border rounded  border-slate-400">
+      <div className="w-[360px] p-5 bg-white border rounded  border-brand-black-secondaryLight">
         <Header variant="h5">Login Your Account</Header>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
           <Input

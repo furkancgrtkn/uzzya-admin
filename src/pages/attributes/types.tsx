@@ -75,7 +75,7 @@ const AttributeTypes = () => {
           </>
         }
       />
-      <div className="px-4 mt-2">
+      <div className="px-3 mt-1">
         <LinkTabs
           tabsData={[
             { id: 1, label: "Özellikler", href: "/attributes" },
@@ -83,7 +83,7 @@ const AttributeTypes = () => {
           ]}
         />
       </div>
-      <div className="p-4">
+      <div className="p-3">
         {attributeTypes ? (
           <DataTable rows={attributeTypes} columns={columns} />
         ) : (

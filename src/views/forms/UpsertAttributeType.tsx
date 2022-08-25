@@ -73,7 +73,7 @@ const UpsertAttributeType = ({
 
   return (
     <>
-      <div className="p-4">
+      <div className="p-3">
         <form
           className="grid grid-cols-1 gap-4"
           onSubmit={handleSubmit(onSubmit)}

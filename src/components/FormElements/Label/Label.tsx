@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode } from "react";
 
 interface LabelProps {
   children: ReactNode;
@@ -9,7 +9,10 @@ const Label: FC<LabelProps> = ({ children, className, htmlFor }) => {
   return (
     <label
       htmlFor={htmlFor}
-      className={`text-sm font-normal text-slate-800 ${className || ''}`}>
+      className={`text-sm font-normal text-brand-black-primary ${
+        className || ""
+      }`}
+    >
       {children}
     </label>
   );

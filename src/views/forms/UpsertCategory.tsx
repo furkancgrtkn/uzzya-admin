@@ -120,7 +120,7 @@ const UpsertCategory = ({
 
   return categories ? (
     <>
-      <div className="p-4">
+      <div className="p-3">
         <form
           className="grid grid-cols-1 gap-4"
           onSubmit={handleSubmit(onSubmit)}
@@ -163,25 +163,27 @@ const UpsertCategory = ({
             {currentImage && (
               <div className="mb-2">
                 <img
-                  className="min-w-[96px] border border-slate-400 rounded overflow-hidden w-24 h-24 object-cover"
+                  className="min-w-[96px] border border-brand-black-secondaryLight rounded overflow-hidden w-24 h-24 object-cover"
                   src={`${process.env.NEXT_APP_API_URL}/${currentImage}`}
                   alt=""
                 />
               </div>
             )}
             <div
-              className="border cursor-pointer border-slate-400 p-6 rounded overflow-hidden"
+              className="border cursor-pointer border-brand-black-secondaryLight p-6 rounded overflow-hidden"
               {...getRootProps()}
             >
               <input {...getInputProps()} />
 
-              <p className="text-sm text-slate-800">Görsel Seçiniz (1 Adet)</p>
+              <p className="text-sm text-brand-black-primary">
+                Görsel Seçiniz (1 Adet)
+              </p>
             </div>
             {files.length > 0 && (
               <div className="flex items-center space-x-3 mt-2">
                 {files.map((file: any) => (
                   <div
-                    className="w-20 h-20 border border-slate-400 rounded overflow-hidden"
+                    className="w-20 h-20 border border-brand-black-secondaryLight rounded overflow-hidden"
                     key={file.name}
                   >
                     <img

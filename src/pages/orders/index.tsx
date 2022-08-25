@@ -44,7 +44,7 @@ const Orders = () => {
   }
   return (
     <>
-      <div className="p-4">
+      <div className="p-3">
         {orders ? <DataTable rows={orders} columns={columns} /> : <Loading />}
       </div>
     </>

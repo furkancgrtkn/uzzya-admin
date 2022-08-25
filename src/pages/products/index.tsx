@@ -107,7 +107,7 @@ const Products = () => {
           </>
         }
       />
-      <div className="p-4">
+      <div className="p-3">
         {productData ? (
           <DataTable rows={productData} columns={columns} />
         ) : (
@@ -125,7 +125,7 @@ const Products = () => {
         >
           <UpsertProduct
             product={products.find((e) => e.id === editRow)}
-            setRows={() => {
+            onSuccess={() => {
               reFetch().then(() => {
                 setEditRow(undefined);
                 setCreateOpen(false);

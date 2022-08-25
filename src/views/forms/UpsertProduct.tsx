@@ -57,10 +57,10 @@ const schema = yup
   })
   .required();
 const UpsertProduct = ({
-  setRows,
+  onSuccess,
   product,
 }: {
-  setRows: () => void;
+  onSuccess?: () => void;
   product?: ProductType;
 }) => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
@@ -145,7 +145,9 @@ const UpsertProduct = ({
       }
 
       toast.success("İşlem Başarılı");
-      setRows();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       toast.error("Hata");
     } finally {
@@ -183,290 +185,270 @@ const UpsertProduct = ({
   }, [product, setValue]);
 
   return attributes && categories && products ? (
-    <>
-      <div className="p-4">
-        <form
-          className="grid grid-cols-1 gap-4"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <>
-            <fieldset className="grid grid-cols-2 gap-4">
-              <Input
-                props={{
-                  ...register("title"),
-                  placeholder: "Örn. Altin Kolye",
+    <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <>
+        <fieldset className="grid grid-cols-2 gap-4">
+          <Input
+            props={{
+              ...register("title"),
+              placeholder: "Örn. Altin Kolye",
+            }}
+            error={errors.title?.message}
+            label="Ürün Adı"
+          />
+
+          <Input
+            props={{ ...register("slug"), placeholder: "Örn. altin-kolye" }}
+            error={errors.slug?.message}
+            label="Slug"
+          />
+        </fieldset>
+        <fieldset className="grid grid-cols-2 gap-4">
+          <Input
+            props={{
+              ...register("barcode"),
+              placeholder: "Örn. altin-kolye",
+            }}
+            error={errors.barcode?.message}
+            label="Barkod"
+          />
+          <Input
+            props={{
+              ...register("price"),
+              placeholder: "Örn. altin-kolye",
+            }}
+            error={errors.price?.message}
+            label="İndirimsiz Fiyat"
+          />
+        </fieldset>
+        <fieldset className="grid grid-cols-2 gap-4">
+          <Input
+            props={{
+              ...register("discounted_price"),
+              placeholder: "Örn. altin-kolye",
+            }}
+            error={errors.discounted_price?.message}
+            label="İndirimli Fiyat"
+          />
+
+          <Input
+            props={{
+              ...register("discount_rate"),
+              placeholder: "Örn. altin-kolye",
+            }}
+            error={errors.discount_rate?.message}
+            label="İndirimli Oranı"
+          />
+        </fieldset>
+
+        <fieldset className="grid grid-cols-2 gap-4">
+          <Input
+            props={{
+              ...register("brand"),
+              placeholder: "Örn. altin-kolye",
+            }}
+            error={errors.brand?.message}
+            label="Marka"
+          />
+          <Input
+            props={{
+              ...register("stock"),
+              placeholder: "Örn. altin-kolye",
+            }}
+            error={errors.stock?.message}
+            label="Stok"
+          />
+        </fieldset>
+
+        <fieldset className="grid grid-cols-2 gap-4">
+          <Controller
+            control={control}
+            name="parent_id"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Select
+                label="Ana Ürün"
+                onChange={(e) => {
+                  onChange(e);
                 }}
-                error={errors.title?.message}
-                label="Ürün Adı"
+                selected={value}
+                disabled={!products}
+                options={
+                  products?.map((el) => {
+                    return {
+                      value: el.id,
+                      label: el.title,
+                      filterValue: el.title,
+                    };
+                  })!
+                }
+                error={error?.message}
               />
+            )}
+          />
 
-              <Input
-                props={{ ...register("slug"), placeholder: "Örn. altin-kolye" }}
-                error={errors.slug?.message}
-                label="Slug"
-              />
-            </fieldset>
-
-            <Input
-              props={{
-                ...register("description"),
-                placeholder: "Örn. altin-kolye",
-              }}
-              error={errors.description?.message}
-              label="Açıklama"
-            />
-
-            <Input
-              props={{
-                ...register("short_description"),
-                placeholder: "Örn. altin-kolye",
-              }}
-              error={errors.short_description?.message}
-              label="Kısa Açıklama"
-            />
-
-            <fieldset className="grid grid-cols-2 gap-4">
-              <Input
-                props={{
-                  ...register("barcode"),
-                  placeholder: "Örn. altin-kolye",
+          <Controller
+            control={control}
+            name="category_id"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Select
+                label="Kategori"
+                onChange={(e) => {
+                  onChange(e);
                 }}
-                error={errors.barcode?.message}
-                label="Barkod"
+                selected={value}
+                disabled={!categories}
+                options={
+                  categories?.map((el) => {
+                    return {
+                      value: el.id,
+                      label: el.title,
+                      filterValue: el.title,
+                    };
+                  })!
+                }
+                error={error?.message}
               />
+            )}
+          />
+        </fieldset>
+        <Input
+          props={{
+            ...register("description"),
+            placeholder: "Örn. altin-kolye",
+          }}
+          error={errors.description?.message}
+          label="Açıklama"
+        />
 
-              <Input
-                props={{
-                  ...register("brand"),
-                  placeholder: "Örn. altin-kolye",
-                }}
-                error={errors.brand?.message}
-                label="Marka"
-              />
-            </fieldset>
+        <Input
+          props={{
+            ...register("short_description"),
+            placeholder: "Örn. altin-kolye",
+          }}
+          error={errors.short_description?.message}
+          label="Kısa Açıklama"
+        />
 
-            <fieldset className="grid grid-cols-2 gap-4">
-              <Input
-                props={{
-                  ...register("stock"),
-                  placeholder: "Örn. altin-kolye",
-                }}
-                error={errors.stock?.message}
-                label="Stok"
-              />
-
-              <Input
-                props={{
-                  ...register("price"),
-                  placeholder: "Örn. altin-kolye",
-                }}
-                error={errors.price?.message}
-                label="İndirimsiz Fiyat"
-              />
-            </fieldset>
-
-            <fieldset className="grid grid-cols-2 gap-4">
-              <Input
-                props={{
-                  ...register("discounted_price"),
-                  placeholder: "Örn. altin-kolye",
-                }}
-                error={errors.discounted_price?.message}
-                label="İndirimli Fiyat"
-              />
-
-              <Input
-                props={{
-                  ...register("discount_rate"),
-                  placeholder: "Örn. altin-kolye",
-                }}
-                error={errors.discount_rate?.message}
-                label="İndirimli Oranı"
-              />
-            </fieldset>
-
-            <Controller
-              control={control}
-              name="parent_id"
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Select
-                  label="Ana Ürün"
-                  onChange={(e) => {
-                    onChange(e);
-                  }}
-                  selected={value}
-                  disabled={!products}
-                  options={
-                    products?.map((el) => {
-                      return {
-                        value: el.id,
-                        label: el.title,
-                        filterValue: el.title,
-                      };
-                    })!
+        <Controller
+          control={control}
+          name="attributes"
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <MultipleSelect
+              label="Özellikler"
+              onChange={(e) => {
+                if (typeof e === "string") {
+                  if (value.includes(e)) {
+                    onChange(value.filter((el) => el !== e));
+                  } else {
+                    onChange([...value, e]);
                   }
-                  error={error?.message}
-                />
-              )}
+                } else {
+                  onChange(e);
+                }
+              }}
+              selecteds={value}
+              options={
+                attributes.map((el) => {
+                  return {
+                    value: el.id,
+                    label: (
+                      <span>
+                        {el.value}{" "}
+                        <span className="text-xs opacity-50">
+                          {el.attribute_type.title}
+                        </span>{" "}
+                      </span>
+                    ),
+                    filterValue: el.value,
+                  };
+                })!
+              }
+              error={error?.message}
             />
-
-            <Controller
-              control={control}
-              name="category_id"
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Select
-                  label="Kategori"
-                  onChange={(e) => {
-                    onChange(e);
-                  }}
-                  selected={value}
-                  disabled={!categories}
-                  options={
-                    categories?.map((el) => {
-                      return {
-                        value: el.id,
-                        label: el.title,
-                        filterValue: el.title,
-                      };
-                    })!
-                  }
-                  error={error?.message}
-                />
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="attributes"
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <MultipleSelect
-                  label="Özellikler"
-                  onChange={(e) => {
-                    if (typeof e === "string") {
-                      if (value.includes(e)) {
-                        onChange(value.filter((el) => el !== e));
-                      } else {
-                        onChange([...value, e]);
+          )}
+        />
+        <div className="flex flex-col w-full">
+          {currentImages && currentThumbnail && (
+            <div className="flex overflow-x-auto items-center space-x-3 mb-2">
+              {currentImages?.map((dt) => (
+                <div key={dt} className="flex flex-col">
+                  <button
+                    onClick={() => {
+                      if (dt !== currentThumbnail) {
+                        setCurrentImages(
+                          currentImages.filter((el) => el !== dt)
+                        );
                       }
-                    } else {
-                      onChange(e);
-                    }
-                  }}
-                  selecteds={value}
-                  options={
-                    attributes.map((el) => {
-                      return {
-                        value: el.id,
-                        label: (
-                          <span>
-                            {el.value}{" "}
-                            <span className="text-xs opacity-50">
-                              {el.attribute_type.title}
-                            </span>{" "}
-                          </span>
-                        ),
-                        filterValue: el.value,
-                      };
-                    })!
-                  }
-                  error={error?.message}
-                />
-              )}
-            />
-            {console.log(errors)}
-            <div className="flex flex-col w-full">
-              {currentImages && currentThumbnail && (
-                <div className="flex overflow-x-auto items-center space-x-3 mb-2">
-                  {currentImages?.map((dt) => (
-                    <div key={dt} className="flex flex-col">
-                      <button
-                        onClick={() => {
-                          if (dt !== currentThumbnail) {
-                            setCurrentImages(
-                              currentImages.filter((el) => el !== dt)
-                            );
-                          }
-                        }}
-                        disabled={dt === currentThumbnail}
-                        className="ml-auto mb-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
-                      >
-                        <XMarkIcon className="w-3 h-3 text-slate-800" />
-                      </button>
-                      <img
-                        className="min-w-[96px] border border-slate-400 rounded overflow-hidden w-24 h-24 object-cover"
-                        src={`${process.env.NEXT_APP_API_URL}/${dt}`}
-                        alt=""
-                      />
-                      {currentThumbnail === dt ? (
-                        <span className="text-[10px] text-center mt-1.5">
-                          Kapak Fotoğrafı
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => setCurrentThumnail(dt)}
-                          className="text-[10px] mt-1.5"
-                        >
-                          Seç
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div
-                className="border border-slate-400 p-6 rounded overflow-hidden"
-                {...getRootProps()}
-              >
-                <input {...getInputProps()} />
-
-                <p className="text-sm text-slate-800">Görsel Seçiniz</p>
-              </div>
-              {files.length > 0 && (
-                <div className="flex items-center space-x-3 mt-2">
-                  {files.map((file: any) => (
-                    <div
-                      onClick={() => {
-                        setFiles(files.filter((el: any) => el !== file));
-                      }}
-                      className="w-20 cursor-pointer h-20 border border-slate-400 rounded overflow-hidden"
-                      key={file.name}
+                    }}
+                    disabled={dt === currentThumbnail}
+                    className="ml-auto mb-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <XMarkIcon className="w-3 h-3 text-brand-black-primary" />
+                  </button>
+                  <img
+                    className="min-w-[96px] border border-brand-black-secondaryLight rounded overflow-hidden w-24 h-24 object-cover"
+                    src={`${process.env.NEXT_APP_API_URL}/${dt}`}
+                    alt=""
+                  />
+                  {currentThumbnail === dt ? (
+                    <span className="text-[10px] text-center mt-1.5">
+                      Kapak Fotoğrafı
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setCurrentThumnail(dt)}
+                      className="text-[10px] mt-1.5"
                     >
-                      <img
-                        src={file.preview}
-                        alt=""
-                        className="w-full h-full object-cover"
-                        onLoad={() => {
-                          URL.revokeObjectURL(file.preview);
-                        }}
-                      />
-                    </div>
-                  ))}
+                      Seç
+                    </button>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
+          )}
+          <div
+            className="border border-brand-black-secondaryLight p-6 rounded overflow-hidden"
+            {...getRootProps()}
+          >
+            <input {...getInputProps()} />
 
-            <div className="flex justify-end w-full">
-              <Button
-                loading={postLoad}
-                type="submit"
-                className="font-medium px-3 py-2 rounded text-white bg-brand-green"
-              >
-                {product ? "Güncelle" : "Oluştur"}
-              </Button>
+            <p className="text-sm text-brand-black-primary">Görsel Seçiniz</p>
+          </div>
+          {files.length > 0 && (
+            <div className="flex items-center space-x-3 mt-2">
+              {files.map((file: any) => (
+                <div
+                  onClick={() => {
+                    setFiles(files.filter((el: any) => el !== file));
+                  }}
+                  className="w-20 cursor-pointer h-20 border border-brand-black-secondaryLight rounded overflow-hidden"
+                  key={file.name}
+                >
+                  <img
+                    src={file.preview}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onLoad={() => {
+                      URL.revokeObjectURL(file.preview);
+                    }}
+                  />
+                </div>
+              ))}
             </div>
-          </>
-        </form>
-      </div>
-    </>
+          )}
+        </div>
+
+        <div className="flex justify-end w-full">
+          <Button
+            loading={postLoad}
+            type="submit"
+            className="font-medium px-5 py-1.5 rounded text-sm text-white bg-brand-palette-primary"
+          >
+            {product ? "Güncelle" : "Oluştur"}
+          </Button>
+        </div>
+      </>
+    </form>
   ) : (
     <Loading />
   );
