@@ -9,7 +9,7 @@ import Input from "src/components/FormElements/Input";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import Header from "src/components/Typography/Header";
-import { Product } from "src/hooks/api/order/types";
+import { UniqueOrderProduct } from "src/hooks/api/order/types";
 import useOrder from "src/hooks/api/order/useOrder";
 import axiosInstance from "src/utils/axiosInstance";
 import * as yup from "yup";
@@ -35,7 +35,7 @@ const InfoBox = ({
 }) => {
   return (
     <div
-      className={`flex flex-col p-2 border rounded border-brand-black-secondaryLight ${
+      className={`flex bg-white flex-col p-2 border rounded border-brand-black-secondaryLight ${
         className || ""
       }`}
     >
@@ -49,12 +49,12 @@ const ProductCard = ({
   data,
   className,
 }: {
-  data: Product;
+  data: UniqueOrderProduct;
   className?: string;
 }) => {
   return (
     <div
-      className={`flex flex-col p-2 border rounded border-brand-black-secondaryLight ${
+      className={`flex bg-white flex-col p-2 border rounded border-brand-black-secondaryLight ${
         className || ""
       }`}
     >
@@ -76,8 +76,8 @@ const ProductCard = ({
       <div className="flex mt-2 flex-wrap    items-center justify-between">
         {data.product.attributes.map((e) => (
           <div
-            key={e.attribute_id}
-            className="text-sm py-0.5 px-1.5     mr-1 mb-1 bg-slate-200 rounded"
+            key={e.attribute.id}
+            className="text-sm py-0.5 px-1.5 mr-1 mb-1 bg-brand-black-secondaryLight/20 rounded"
           >
             {e.attribute.attribute_type.title}: {e.attribute.value}
           </div>
@@ -134,10 +134,10 @@ const Orders = () => {
           <Header className="col-span-2" variant="h6">
             Alıcı bilgileri
           </Header>
-          <InfoBox title="Alıcı İsmi" value={order?.name} />
-          <InfoBox title="Alıcı Soyismi" value={order.surname} />
-          <InfoBox title="Telefon Numarası" value={order?.phone} />
-          <InfoBox title="Email" value={order?.email} />
+          <InfoBox title="Alıcı İsmi" value={order?.user.profile.name} />
+          <InfoBox title="Alıcı Soyismi" value={order.user.profile.surname} />
+          <InfoBox title="Telefon Numarası" value={order?.user.profile.phone} />
+          <InfoBox title="Email" value={order?.user.email} />
           <Header className="col-span-2" variant="h6">
             Sipariş bilgileri
           </Header>
@@ -146,7 +146,10 @@ const Orders = () => {
             title="Tarih"
             value={new Date(order?.created_at).toLocaleDateString()}
           />
-          <InfoBox title="Iyzico Token" value={order?.token} />
+          <InfoBox
+            title="Güncellenme Tarihi"
+            value={new Date(order?.updated_at).toLocaleDateString()}
+          />
           <InfoBox title="Puan" value={order?.rate || "-"} />
           <InfoBox
             title="Yorum"
@@ -192,6 +195,7 @@ const Orders = () => {
             className="col-span-2 flex flex-col"
           >
             <Input
+              label="Takip Numarası"
               props={{
                 ...register("tracking_number"),
                 placeholder: "Takip Numarası",
@@ -202,7 +206,7 @@ const Orders = () => {
             <Button
               loading={postLoad}
               type="submit"
-              className="ml-auto mt-1 bg-brand-green text-white text-sm px-2 py-1 rounded font-medium"
+              className="ml-auto mt-2 bg-brand-palette-primary text-white text-sm px-5 py-1.5 rounded font-medium"
             >
               {order.shipping.tracking_number ? "Güncelle" : "Gönderimi Onayla"}
             </Button>

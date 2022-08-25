@@ -15,6 +15,7 @@ export default function useProducts() {
           title: true,
           images: true,
           slug: true,
+          published: true,
           description: true,
           price: true,
           parent_id: true,

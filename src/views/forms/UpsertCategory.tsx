@@ -5,8 +5,9 @@ import { useDropzone } from "react-dropzone";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "src/components/FormElements/Input";
-import { Select } from "src/components/FormElements/Select";
+import { MultipleSelect, Select } from "src/components/FormElements/Select";
 import FormHeader from "src/components/FormHeader";
+import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import { Category } from "src/hooks/api/category/types";
 import axiosInstance from "src/utils/axiosInstance";
 import * as yup from "yup";
@@ -15,6 +16,7 @@ interface UpsertCategoryRequest {
   title: string;
   slug: string;
   parent_id: string;
+  filters: string[];
 }
 
 const schema = yup
@@ -23,15 +25,22 @@ const schema = yup
     title: yup.string().required("Bu Alan Zorunludur."),
     slug: yup.string().required("Bu Alan Zorunludur."),
     parent_id: yup.string().notRequired().nullable(),
+    filters: yup
+      .array()
+      .of(yup.string())
+      .min(1, "En az bir adet özellik seçmelisiniz.")
+      .required("Bu Alan Zorunludur."),
   })
   .required();
 const UpsertCategory = ({
   categories,
   onSuccess,
   category,
+  attributeTypes,
 }: {
   categories: Category[] | undefined;
   onSuccess: () => void;
+  attributeTypes: AttributeTypeType[];
   category: Category | undefined;
 }) => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
@@ -46,6 +55,9 @@ const UpsertCategory = ({
     formState: { errors },
   } = useForm<UpsertCategoryRequest>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      filters: [],
+    },
   });
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -70,10 +82,21 @@ const UpsertCategory = ({
       const { data: cat } = await axiosInstance.post("/category/upsert", {
         create: {
           ...data,
+          filters: {
+            create: data.filters.map((e) => {
+              return { attribute_type: { connect: { id: e } } };
+            }),
+          },
         },
         update: {
           ...data,
           image: currentImage,
+          filters: {
+            deleteMany: {},
+            create: data.filters.map((e) => {
+              return { attribute_type: { connect: { id: e } } };
+            }),
+          },
         },
         where: { id: category?.id || "" },
         select: { id: true },
@@ -117,6 +140,10 @@ const UpsertCategory = ({
       setValue("parent_id", category.parent?.id);
       setValue("slug", category.slug);
       setCurrentImage(category.image);
+      setValue(
+        "filters",
+        category.filters.map((attr) => attr.attribute_type.id)
+      );
     }
   }, [category, setValue]);
 
@@ -161,6 +188,35 @@ const UpsertCategory = ({
           )}
         />
 
+        <Controller
+          control={control}
+          name="filters"
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <MultipleSelect
+              label="Filtreler"
+              onChange={(e) => {
+                if (typeof e === "string") {
+                  if (value.includes(e)) {
+                    onChange(value.filter((el) => el !== e));
+                  } else {
+                    onChange([...value, e]);
+                  }
+                } else {
+                  onChange(e);
+                }
+              }}
+              selecteds={value}
+              options={attributeTypes.map((el) => {
+                return {
+                  value: el.id,
+                  label: el.title,
+                  filterValue: el.title,
+                };
+              })}
+              error={error?.message}
+            />
+          )}
+        />
         <div className="w-full">
           {currentImage && (
             <div className="mb-2">

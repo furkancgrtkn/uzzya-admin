@@ -28,8 +28,11 @@ module.exports = {
             primary: "#f59e0b",
             primaryLight: "#FEF8F0",
           },
+          green: {
+            primary: "#00D8A7",
+            primaryLight: "#ECFBF6",
+          },
           background: "#FAFBFC",
-          green: "#00D8A7",
         },
       },
       transitionProperty: {

@@ -8,6 +8,7 @@ import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { TrashBtn } from "src/components/Table/Elements";
+import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
 import { Category } from "src/hooks/api/category/types";
 import useCategories from "src/hooks/api/category/useCategories";
 import { UpsertCategory } from "src/views/forms";
@@ -17,6 +18,8 @@ const Categories = () => {
   const [createOpen, setCreateOpen] = useState<boolean>(false);
 
   const { data: categories, isError, reFetch } = useCategories();
+  const { data: attributeTypes, isError: isAttributeTypesError } =
+    useAttributeTypes();
 
   const columns: DataTableProps<Category>["columns"] = [
     {
@@ -46,7 +49,24 @@ const Categories = () => {
       cell: (row) => <>{row?.parent?.title || "-"}</>,
       header: () => "Üst Kategori",
     },
-
+    {
+      key: "filters",
+      cell: (row) => (
+        <>
+          {row.filters.map((e) => {
+            return (
+              <span
+                className="text-xs mr-1 px-1.5 rounded border border-brand-black-secondaryLight py-0.5"
+                key={e.attribute_type.id}
+              >
+                {e.attribute_type.title}
+              </span>
+            );
+          })}
+        </>
+      ),
+      header: () => "Filtreler",
+    },
     {
       key: "actions",
       cell: (row) => (
@@ -69,7 +89,7 @@ const Categories = () => {
       header: () => null,
     },
   ];
-  if (isError) {
+  if (isError || isAttributeTypesError) {
     return <div>Error</div>;
   }
   return (
@@ -98,7 +118,7 @@ const Categories = () => {
         )}
       </div>
 
-      {categories && (
+      {categories && attributeTypes && (
         <Drawer
           isOpen={createOpen}
           onClose={() => {
@@ -107,6 +127,7 @@ const Categories = () => {
           }}
         >
           <UpsertCategory
+            attributeTypes={attributeTypes}
             categories={categories}
             category={categories?.find((e) => e.id === editRow)}
             onSuccess={() => {

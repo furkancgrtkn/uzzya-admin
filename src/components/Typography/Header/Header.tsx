@@ -64,7 +64,7 @@ const Header: FC<HeaderProps> = ({ children, variant, className }) => {
   if (variant === "h6") {
     return (
       <h6
-        className={`text-sm font-bold md:text-base text-brand-black-primary ${
+        className={`text-sm font-semibold md:text-base text-brand-black-primary ${
           className || ""
         }`}
       >

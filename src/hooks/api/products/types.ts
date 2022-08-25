@@ -13,6 +13,7 @@ export type ProductType = {
   parent_id: string;
   discounted_price: number;
   discount_rate: number;
+  published: boolean;
 
   category: {
     id: string;

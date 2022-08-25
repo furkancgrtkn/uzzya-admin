@@ -14,6 +14,7 @@ export default function useOrders() {
           id: true,
           status: true,
           updated_at: true,
+          created_at: true,
           comment: true,
           rate: true,
           user: {

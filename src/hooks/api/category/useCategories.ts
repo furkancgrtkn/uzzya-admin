@@ -15,6 +15,11 @@ export default function useCategories() {
           title: true,
           image: true,
           slug: true,
+          filters: {
+            select: {
+              attribute_type: true,
+            },
+          },
           parent: {
             select: {
               id: true,

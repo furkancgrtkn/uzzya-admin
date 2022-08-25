@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useEffect, useState } from "react";
 import { PlusCircleIcon, PencilIcon } from "@heroicons/react/24/outline";
+import Badge from "src/components/Badge";
 import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
 import Default from "src/components/Layout/Default";
@@ -60,6 +61,18 @@ const Products = () => {
       key: "brand",
       cell: (row) => <>{row.brand}</>,
       header: () => "Marka",
+    },
+    {
+      key: "published",
+      cell: (row) => (
+        <>
+          <Badge
+            text={row.published ? "Yayında" : "Arşivde"}
+            type={row.published ? "success" : "warning"}
+          />
+        </>
+      ),
+      header: () => "Durum",
     },
     {
       key: "actions",

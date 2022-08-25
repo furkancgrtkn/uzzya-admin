@@ -32,6 +32,7 @@ interface UpsertProductRequest {
   discount_rate: number;
   category_id: string;
   attributes: string[];
+  published: boolean;
 }
 
 const schema = yup
@@ -45,6 +46,7 @@ const schema = yup
     barcode: yup.string().required("Bu Alan Zorunludur."),
     stock: yup.number().required("Bu Alan Zorunludur."),
     price: yup.number().required("Bu Alan Zorunludur."),
+    published: yup.boolean().required("Bu Alan Zorunludur."),
     discounted_price: yup.number().required("Bu Alan Zorunludur."),
     discount_rate: yup.number().required("Bu Alan Zorunludur."),
     category_id: yup.string().required("Bu Alan Zorunludur."),
@@ -263,7 +265,20 @@ const UpsertProduct = ({
             label="Stok"
           />
         </fieldset>
-
+        <div className="flex justify-end items-center">
+          <label
+            className="flex select-none cursor-pointer items-center"
+            htmlFor="published"
+          >
+            <input
+              id="published"
+              {...register("published")}
+              className="text-brand-black-primary rounded-sm focus:ring-transparent"
+              type="checkbox"
+            />
+            <span className="text-sm ml-1">Yayınla</span>
+          </label>
+        </div>
         <fieldset className="grid grid-cols-2 gap-4">
           <Controller
             control={control}

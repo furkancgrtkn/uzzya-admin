@@ -11,18 +11,54 @@ export default function useOrder(id: string) {
     try {
       const { data } = await axiosInstance.post(`/order/unique/foradmin`, {
         where: { id: +orderId },
-        include: {
+        select: {
+          id: true,
+          status: true,
+          updated_at: true,
+          created_at: true,
+          uuid: true,
+          comment: true,
+          rate: true,
+          user: {
+            select: {
+              email: true,
+              profile: {
+                select: { name: true, phone: true, surname: true },
+              },
+            },
+          },
           shipping: true,
-          payment: true,
+          payment: {
+            select: {
+              id: true,
+              iyzicoJson: true,
+              updated_at: true,
+            },
+          },
           products: {
-            include: {
+            select: {
+              price: true,
               product: {
-                include: {
-                  category: true,
+                select: {
+                  id: true,
+                  thumbnail: true,
+                  slug: true,
+                  barcode: true,
+                  stock: true,
+                  title: true,
+                  category: {
+                    select: {
+                      title: true,
+                      slug: true,
+                      id: true,
+                    },
+                  },
                   attributes: {
-                    include: {
+                    select: {
                       attribute: {
-                        include: {
+                        select: {
+                          id: true,
+                          value: true,
                           attribute_type: true,
                         },
                       },
@@ -30,6 +66,10 @@ export default function useOrder(id: string) {
                   },
                 },
               },
+              product_id: true,
+              status: true,
+              quantity: true,
+              discounted_price: true,
             },
           },
         },
