@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import { ReactElement, useEffect, useState } from "react";
-import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ReactElement, useState } from "react";
+import { PlusCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
 import Default from "src/components/Layout/Default";
@@ -10,17 +9,13 @@ import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { TrashBtn } from "src/components/Table/Elements";
 import { LinkTabs } from "src/components/Tabs";
+import { AttributeType } from "src/hooks/api/attributes/types";
 import useAttributes from "src/hooks/api/attributes/useAttributes";
 import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
 import { UpsertAttribute } from "src/views/forms";
 const Attributes = () => {
-  const [attributeRows, setAttributeRows] = useState<
-    DataTableProps["rows"] | null
-  >();
-  const [editAttributeRow, setEditAttributeRow] = useState<string | number>();
-
-  const [attributeDrawerOpen, setAttributeDrawerOpen] =
-    useState<boolean>(false);
+  const [editRow, setEditRow] = useState<string | number>();
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const { data: attributeTypes, isError: isAttributeTypesError } =
     useAttributeTypes();
@@ -30,73 +25,42 @@ const Attributes = () => {
     reFetch: attributesReFetch,
   } = useAttributes();
 
-  const attributeCols = [
+  const columns: DataTableProps<AttributeType>["columns"] = [
     {
-      name: "Özellik Adı",
-      row: "value",
-      visible: true,
+      key: "title",
+      cell: (row) => <>{row.value}</>,
+      header: () => "Title",
+      width: "120px",
+      maxWidth: "120px",
+      sticky: "left",
     },
     {
-      name: "Özellik Tipi",
-      row: "type",
-      visible: true,
+      key: "type",
+      cell: (row) => <>{row.attribute_type.title}</>,
+      header: () => "Type",
     },
     {
-      name: "Row Options",
-      row: "options",
-      visible: false,
+      key: "actions",
+      cell: (row) => (
+        <div className={"ml-auto flex w-min"}>
+          <button
+            onClick={() => {
+              setEditRow(row.id);
+              setDrawerOpen(true);
+            }}
+            className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
+          >
+            <EyeIcon className={`w-3.5 h-3.5`} />
+          </button>
+          <TrashBtn
+            endPoint={`/category/delete/${row.id}`}
+            onSuccess={() => {}}
+          />
+        </div>
+      ),
+      header: () => null,
     },
   ];
-
-  useEffect(() => {
-    if (attributes) {
-      setAttributeRows(
-        attributes.map((e) => {
-          return [
-            {
-              id: e.id,
-              selector: "id",
-            },
-            {
-              render: e.value,
-              selector: "value",
-            },
-            {
-              render: e.attribute_type.title,
-              selector: "type",
-            },
-            {
-              render: (
-                <div className={"ml-auto flex w-min"}>
-                  <button
-                    onClick={() => {
-                      setEditAttributeRow(e.id);
-                      setAttributeDrawerOpen(true);
-                    }}
-                    className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
-                  >
-                    <FontAwesomeIcon icon={faPen} className={`w-3 h-3`} />
-                  </button>
-                  <TrashBtn
-                    endPoint={`/attribute/delete/${e.id}`}
-                    onSuccess={() => {
-                      setAttributeRows((prev) =>
-                        prev?.filter(
-                          (p) =>
-                            p.filter((r) => r.selector === "id")[0].id !== e.id
-                        )
-                      );
-                    }}
-                  />
-                </div>
-              ),
-              selector: "options",
-            },
-          ];
-        })
-      );
-    }
-  }, [attributes]);
 
   if (isAttributeTypesError || isAttributesError) {
     return <div>Error</div>;
@@ -104,25 +68,20 @@ const Attributes = () => {
   return (
     <>
       <PageHeader
-        className="pl-4"
         actions={
           <>
             <Button
-              className="w-full px-4 border-l hover:bg-slate-100"
+              className="w-full py-1.5 rounded my-auto h-min px-4 border border-brand-palette-primary text-brand-palette-primary"
               onClick={() => {
-                setEditAttributeRow(undefined);
-                setAttributeDrawerOpen(true);
+                setEditRow(undefined);
+                setDrawerOpen(true);
               }}
             >
-              <FontAwesomeIcon
-                icon={faPlus}
-                className="w-4 h-4 mr-2 text-slate-700"
-              />
-              <span className="text-slate-800">Özellik Oluştur</span>
+              <PlusCircleIcon className="w-4 h-4 mr-2" />
+              <span className="text-sm">Özellik Oluştur</span>
             </Button>
           </>
         }
-        title={"Özellikler"}
       />
       <div className="px-4 mt-2">
         <LinkTabs
@@ -133,12 +92,8 @@ const Attributes = () => {
         />
       </div>
       <div className="p-4">
-        {attributes && attributeRows ? (
-          <DataTable
-            className="mt-2"
-            rows={attributeRows}
-            cols={attributeCols}
-          />
+        {attributes ? (
+          <DataTable rows={attributes} columns={columns} />
         ) : (
           <Loading />
         )}
@@ -146,19 +101,19 @@ const Attributes = () => {
 
       {attributeTypes && (
         <Drawer
-          isOpen={attributeDrawerOpen}
+          isOpen={drawerOpen}
           onClose={() => {
-            setAttributeDrawerOpen(false);
-            setEditAttributeRow(undefined);
+            setDrawerOpen(false);
+            setEditRow(undefined);
           }}
         >
           <UpsertAttribute
-            attribute={attributes?.find((e) => e.id === editAttributeRow)}
+            attribute={attributes?.find((e) => e.id === editRow)}
             attributeTypes={attributeTypes}
             setRows={() => {
               attributesReFetch().then(() => {
-                setAttributeDrawerOpen(false);
-                setEditAttributeRow(undefined);
+                setDrawerOpen(false);
+                setEditRow(undefined);
               });
             }}
           />

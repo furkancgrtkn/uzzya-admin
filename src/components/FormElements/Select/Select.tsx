@@ -1,6 +1,5 @@
 import { FC, ReactNode, useRef, useState } from "react";
-import { faClose, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useOnClickOutside } from "usehooks-ts";
 import ErrorMessage from "../ErrorMessage";
 import Label from "../Label";
@@ -59,10 +58,7 @@ const Select: FC<SelectProps> = ({
             onChange(undefined);
           }}
         >
-          <FontAwesomeIcon
-            icon={faClose}
-            className={`w-[14px] h-[14px] text-slate-500`}
-          />
+          <XMarkIcon className={`w-[14px] h-[14px] text-slate-500`} />
         </button>
       )}
       <div
@@ -80,8 +76,7 @@ const Select: FC<SelectProps> = ({
         )}
 
         {!selected && (
-          <FontAwesomeIcon
-            icon={faChevronDown}
+          <ChevronDownIcon
             className={`w-3 h-3 text-slate-500 transform transition-transform duration-200 ${
               open ? "rotate-180" : "rotate-0"
             }`}

@@ -1,160 +1,79 @@
-import { FC, HTMLProps, useEffect, useRef, useState } from "react";
-import {
-  Column,
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  Table,
-  useReactTable,
-} from "@tanstack/react-table";
 import Paragraph from "../Typography/Paragraph";
-import ColFilter from "./utils/ColFilter";
 
-export interface DataTableProps {
+export interface DataTableProps<T> {
   className?: string;
-  data: any;
-  columns: any;
+  rows: T[];
+  columns: {
+    key: string;
+    width?: string;
+    sticky?: "left" | "right";
+    maxWidth?: string;
+    minWidth?: string;
+    // eslint-disable-next-line no-undef, no-unused-vars
+    cell: (row: T) => JSX.Element | string | null | number;
+    // eslint-disable-next-line no-undef, no-unused-vars
+    header: () => JSX.Element | string | null;
+  }[];
 }
 
-const DataTable: FC<DataTableProps> = ({ className, data, columns }) => {
-  const [rowSelection, setRowSelection] = useState({});
-  const [globalFilter, setGlobalFilter] = useState("");
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      rowSelection,
-    },
-    onRowSelectionChange: setRowSelection,
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    debugTable: true,
-  });
-  return data && data.length > 0 ? (
-    <>
-      <div>
-        <input
-          value={globalFilter ?? ""}
-          type="text"
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="text-sm w-full placeholder:text-brand-black-secondary font-normal border text-brand-black-primary rounded border-brand-black-secondary focus:ring-transparent focus:border-brand-black-secondary"
-          placeholder="Search all columns..."
-        />
-      </div>
-      <div
-        className={`min-w-full bg-white border rounded w-full overflow-x-auto  ${
-          className || ""
-        }`}
-      >
-        <table className="w-full">
-          <thead className="text-left border-b">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    className="px-3 py-1.5 text-brand-black-secondary font-semibold text-sm"
-                    key={header.id}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    {header.column.getCanFilter() ? (
-                      <div>
-                        <ColFilter column={header.column} table={table} />
-                      </div>
-                    ) : null}
-                  </th>
-                ))}
-              </tr>
+const DataTable = <T extends object>({
+  className,
+  rows,
+  columns,
+}: DataTableProps<T>) => {
+  return rows && rows.length > 0 ? (
+    <div
+      className={`min-w-full relative bg-white border border-brand-black-secondaryLight rounded w-full overflow-x-auto  ${
+        className || ""
+      }`}
+    >
+      <table className="w-full">
+        <thead className="text-left">
+          <tr>
+            {columns.map((col) => (
+              <th
+                style={{
+                  maxWidth: col.maxWidth,
+                  width: col.width,
+                  position: col.sticky ? "sticky" : undefined,
+                  zIndex: col.sticky ? "1" : undefined,
+                  left: col.sticky === "left" ? "0" : undefined,
+                  right: col.sticky === "right" ? "0" : undefined,
+                  minWidth: col.minWidth || "150px",
+                }}
+                key={col.key}
+                className="px-3 py-1.5 bg-white text-brand-black-primary/80 font-medium text-sm"
+              >
+                {col.header()}
+              </th>
             ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td className="px-3 py-2 text-sm" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {"<<"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {"<"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          {">"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          {">>"}
-        </button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <span className="flex items-center gap-1">
-          | Go to page:
-          <input
-            type="number"
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              table.setPageIndex(page);
-            }}
-            className="border p-1 rounded w-16"
-          />
-        </span>
-        <select
-          value={table.getState().pagination.pageSize}
-          onChange={(e) => {
-            table.setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={index + 1}>
+              {columns.map((col, idx) => (
+                <td
+                  style={{
+                    maxWidth: col.maxWidth,
+                    width: col.width,
+                    position: col.sticky ? "sticky" : undefined,
+                    zIndex: col.sticky ? "1" : undefined,
+                    left: col.sticky === "left" ? "0" : undefined,
+                    right: col.sticky === "right" ? "0" : undefined,
+                    minWidth: col.minWidth || "150px",
+                  }}
+                  key={idx * index}
+                  className="px-3 border-t border-brand-black-secondaryLight bg-white py-1.5 text-sm"
+                >
+                  {col.cell(row)}
+                </td>
+              ))}
+            </tr>
           ))}
-        </select>
-      </div>
-      <br />
-      <div>
-        {Object.keys(rowSelection).length} of{" "}
-        {table.getPreFilteredRowModel().rows.length} Total Rows Selected
-      </div>
-    </>
+        </tbody>
+      </table>
+    </div>
   ) : (
     <Paragraph variant="span">Oluşturulmuş İçerik Bulunamadı.</Paragraph>
   );

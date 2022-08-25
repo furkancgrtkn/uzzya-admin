@@ -4,13 +4,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDropzone } from "react-dropzone";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import * as yup from "yup";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import { Select } from "src/components/FormElements/Select";
-import PageHeader from "src/components/PageHeader";
 import { Category } from "src/hooks/api/category/types";
 import axiosInstance from "src/utils/axiosInstance";
+import * as yup from "yup";
 
 interface UpsertCategoryRequest {
   title: string;
@@ -121,10 +120,6 @@ const UpsertCategory = ({
 
   return categories ? (
     <>
-      <PageHeader
-        className="pl-4"
-        title={category ? "Kategoriyi Güncelle" : "Kategori Oluştur"}
-      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"

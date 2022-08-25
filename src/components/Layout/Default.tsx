@@ -4,12 +4,12 @@ import Sidebar from "../Sidebar";
 export default function Default({ children }: { children: ReactNode }) {
   return (
     <PrivateRoute>
-      <>
+      <div className="flex">
         <Sidebar />
-        <main className={`w-[calc(100%-56px)] ml-[56px] min-h-screen`}>
+        <main className={`min-h-screen w-full overflow-y-auto max-h-screen`}>
           {children}
         </main>
-      </>
+      </div>
     </PrivateRoute>
   );
 }

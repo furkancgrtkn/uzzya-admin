@@ -3,12 +3,11 @@ import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import * as yup from "yup";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
-import PageHeader from "src/components/PageHeader";
 import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import axiosInstance from "src/utils/axiosInstance";
+import * as yup from "yup";
 
 interface UpsertAttributeTypeRequest {
   title: string;
@@ -74,12 +73,6 @@ const UpsertAttributeType = ({
 
   return (
     <>
-      <PageHeader
-        className="pl-4"
-        title={
-          attributeType ? "Özellik Tipini Güncelle" : "Özellik Tipi Oluştur"
-        }
-      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"

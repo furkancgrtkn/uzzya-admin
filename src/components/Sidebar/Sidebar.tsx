@@ -1,11 +1,10 @@
 import {
-  faArrowRightToBracket,
-  faListOl,
-  faShop,
-  faTicketSimple,
-  faWrench,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  BuildingStorefrontIcon,
+  TagIcon,
+  InboxArrowDownIcon,
+  ArrowRightOnRectangleIcon,
+  RectangleGroupIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -15,29 +14,33 @@ export default function Sidebar() {
     {
       id: 2,
       href: "/products",
-      icon: <FontAwesomeIcon icon={faShop} className={`w-4 h-4 p-1`} />,
+      title: "Ürünler",
+      icon: <BuildingStorefrontIcon className={`w-5 h-5`} />,
     },
     {
       id: 4,
       href: "/categories",
-      icon: <FontAwesomeIcon icon={faListOl} className={`w-4 h-4 p-1`} />,
+      title: "Kategoriler",
+      icon: <RectangleGroupIcon className={`w-5 h-5`} />,
     },
     {
       id: 2,
       href: "/attributes",
-      icon: <FontAwesomeIcon icon={faWrench} className={`w-4 h-4 p-1`} />,
+      title: "Özellikler",
+      icon: <TagIcon className={`w-5 h-5`} />,
     },
     {
       id: 2,
       href: "/orders",
-      icon: <FontAwesomeIcon icon={faTicketSimple} className={`w-4 h-4 p-1`} />,
+      title: "Siparişler",
+      icon: <InboxArrowDownIcon className={`w-5 h-5`} />,
     },
   ];
   return (
     <div
-      className={`h-full fixed z-20 border-r top-0 left-0 bg-white min-h-screen w-[56px] py-4 px-2`}
+      className={`h-full z-20 border-r flex flex-col border-brand-black-secondaryLight top-0 left-0 bg-white min-h-screen p-2`}
     >
-      <nav className="space-y-1 select-none">
+      <nav className="space-y-1.5 select-none">
         {navigation.map((item) => (
           <Link key={item.id} href={item.href}>
             <a
@@ -45,9 +48,10 @@ export default function Sidebar() {
                 router.asPath.includes(item.href)
                   ? "bg-brand-palette-primary text-white"
                   : "text-brand-black-secondary lg:hover:text-white lg:hover:bg-brand-palette-primary"
-              } group flex items-center px-2 py-2 text-sm font-medium rounded`}
+              } flex min-w-[180px] leading-none items-center justify-start px-2 py-1.5 text-sm rounded`}
             >
               {item.icon}
+              <span className="ml-2.5">{item.title}</span>
             </a>
           </Link>
         ))}
@@ -56,12 +60,10 @@ export default function Sidebar() {
         onClick={async () => {
           localStorage.clear();
         }}
-        className={`text-brand-black-secondary mt-1 w-full lg:hover:text-white lg:hover:bg-brand-palette-primary group flex items-center px-2 py-2 text-sm font-medium rounded`}
+        className={`text-brand-black-secondary  leading-none min-w-[180px] justify-start px-2 py-1.5 lg:hover:text-white lg:hover:bg-brand-palette-primary group flex items-center mt-auto text-sm rounded`}
       >
-        <FontAwesomeIcon
-          icon={faArrowRightToBracket}
-          className={`w-4 h-4 p-1`}
-        />
+        <ArrowRightOnRectangleIcon className={`w-5 h-5`} />
+        <span className="ml-2.5">Çıkış Yap</span>
       </button>
     </div>
   );

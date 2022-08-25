@@ -1,22 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDropzone } from "react-dropzone";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import * as yup from "yup";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import { MultipleSelect, Select } from "src/components/FormElements/Select";
 import Loading from "src/components/Loading";
-import PageHeader from "src/components/PageHeader";
 import useAttributes from "src/hooks/api/attributes/useAttributes";
 import useCategories from "src/hooks/api/category/useCategories";
 import { ProductType } from "src/hooks/api/products/types";
 import useProducts from "src/hooks/api/products/useProducts";
 import axiosInstance from "src/utils/axiosInstance";
+import * as yup from "yup";
 
 interface UpsertProductRequest {
   slug: string;
@@ -186,10 +184,6 @@ const UpsertProduct = ({
 
   return attributes && categories && products ? (
     <>
-      <PageHeader
-        className="pl-4"
-        title={product ? "Ürünü Güncelle" : "Ürün Oluştur"}
-      />
       <div className="p-4">
         <form
           className="grid grid-cols-1 gap-4"
@@ -405,10 +399,7 @@ const UpsertProduct = ({
                         disabled={dt === currentThumbnail}
                         className="ml-auto mb-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        <FontAwesomeIcon
-                          className="w-3 h-3 text-slate-800"
-                          icon={faClose}
-                        />
+                        <XMarkIcon className="w-3 h-3 text-slate-800" />
                       </button>
                       <img
                         className="min-w-[96px] border border-slate-400 rounded overflow-hidden w-24 h-24 object-cover"

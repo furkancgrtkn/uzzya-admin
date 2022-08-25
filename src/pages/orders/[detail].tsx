@@ -4,16 +4,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import * as yup from "yup";
 import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
-import PageHeader from "src/components/PageHeader";
 import Header from "src/components/Typography/Header";
 import { Product } from "src/hooks/api/order/types";
 import useOrder from "src/hooks/api/order/useOrder";
 import axiosInstance from "src/utils/axiosInstance";
+import * as yup from "yup";
 
 interface UpdateShippingForm {
   tracking_number: string;
@@ -130,7 +129,6 @@ const Orders = () => {
   }
   return (
     <>
-      <PageHeader className="pl-4" title={"Sipariş Detayı"} />
       {order ? (
         <div className="px-4 pt-4 pb-8 grid grid-cols-2 gap-4">
           <Header className="col-span-2" variant="h6">

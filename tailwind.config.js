@@ -16,12 +16,19 @@ module.exports = {
           },
           black: {
             primary: "#484848",
-            secondary: "#787878",
+            secondary: "#6D6D6D",
+            secondaryLight: "#bababa",
+          },
+          red: {
+            primary: "#FF6463",
+            primaryLight: "#FFF2F3",
+          },
+          yellow: {
+            primary: "#f59e0b",
+            primaryLight: "#FEF8F0",
           },
           background: "#FAFBFC",
-          green: "#3ACEA0",
-          yellow: "#fb9871",
-          red: "#F73859",
+          green: "#00D8A7",
         },
       },
       transitionProperty: {

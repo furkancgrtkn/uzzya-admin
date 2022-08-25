@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import axiosInstance from "src/utils/axiosInstance";
 import Swal from "sweetalert2";
@@ -57,9 +56,9 @@ const TrashBtn: FC<TrashBtnProps> = ({ onSuccess, endPoint }) => {
             }
           });
       }}
-      className="flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200"
+      className="flex disabled:opacity-70 disabled:cursor-not-allowed items-center w-7 h-7 justify-center ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-red-primary border border-brand-red-primary hover:bg-brand-red-primaryLight"
     >
-      <FontAwesomeIcon icon={faTrash} className={`w-3 h-3`} />
+      <TrashIcon className={`w-3.5 h-3.5`} />
     </button>
   );
 };

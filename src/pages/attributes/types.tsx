@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import { ReactElement, useEffect, useState } from "react";
-import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ReactElement, useState } from "react";
+import { PlusCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
 import Default from "src/components/Layout/Default";
@@ -10,17 +9,12 @@ import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { TrashBtn } from "src/components/Table/Elements";
 import { LinkTabs } from "src/components/Tabs";
+import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
 import { UpsertAttributeType } from "src/views/forms";
 const AttributeTypes = () => {
-  const [attributeTypeRows, setAttributeTypeRows] = useState<
-    DataTableProps["rows"] | null
-  >();
-  const [editAttributeTypeRow, setEditAttributeTypeRow] = useState<
-    string | number
-  >();
-  const [attributeTypeDrawerOpen, setAttributeTypeDrawerOpen] =
-    useState<boolean>(false);
+  const [editRow, setEditRow] = useState<string | number>();
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const {
     data: attributeTypes,
@@ -28,64 +22,37 @@ const AttributeTypes = () => {
     reFetch: attributeTypesReFetch,
   } = useAttributeTypes();
 
-  const attributeTypeCols = [
+  const columns: DataTableProps<AttributeTypeType>["columns"] = [
     {
-      name: "Ana Özellik Adı",
-      row: "title",
-      visible: true,
+      key: "title",
+      cell: (row) => <>{row.title}</>,
+      header: () => "Title",
+      width: "120px",
+      maxWidth: "120px",
+      sticky: "left",
     },
     {
-      name: "Row Options",
-      row: "options",
-      visible: false,
+      key: "actions",
+      cell: (row) => (
+        <div className={"ml-auto flex w-min"}>
+          <button
+            onClick={() => {
+              setEditRow(row.id);
+              setDrawerOpen(true);
+            }}
+            className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
+          >
+            <EyeIcon className={`w-3.5 h-3.5`} />
+          </button>
+          <TrashBtn
+            endPoint={`/category/delete/${row.id}`}
+            onSuccess={() => {}}
+          />
+        </div>
+      ),
+      header: () => null,
     },
   ];
-
-  useEffect(() => {
-    if (attributeTypes) {
-      setAttributeTypeRows(
-        attributeTypes.map((e) => {
-          return [
-            {
-              id: e.id,
-              selector: "id",
-            },
-            {
-              render: e.title,
-              selector: "title",
-            },
-            {
-              render: (
-                <div className={"ml-auto flex w-min"}>
-                  <button
-                    onClick={() => {
-                      setEditAttributeTypeRow(e.id);
-                      setAttributeTypeDrawerOpen(true);
-                    }}
-                    className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
-                  >
-                    <FontAwesomeIcon icon={faPen} className={`w-3 h-3`} />
-                  </button>
-                  <TrashBtn
-                    endPoint={`/attribute/type/delete/${e.id}`}
-                    onSuccess={() => {
-                      setAttributeTypeRows((prev) =>
-                        prev?.filter(
-                          (p) =>
-                            p.filter((r) => r.selector === "id")[0].id !== e.id
-                        )
-                      );
-                    }}
-                  />
-                </div>
-              ),
-              selector: "options",
-            },
-          ];
-        })
-      );
-    }
-  }, [attributeTypes]);
 
   if (isAttributeTypesError) {
     return <div>Error</div>;
@@ -93,25 +60,20 @@ const AttributeTypes = () => {
   return (
     <>
       <PageHeader
-        className="pl-4"
         actions={
           <>
             <Button
-              className="w-full px-4 border-l hover:bg-slate-100"
+              className="w-full py-1.5 rounded my-auto h-min px-4 border border-brand-palette-primary text-brand-palette-primary"
               onClick={() => {
-                setEditAttributeTypeRow(undefined);
-                setAttributeTypeDrawerOpen(true);
+                setEditRow(undefined);
+                setDrawerOpen(true);
               }}
             >
-              <FontAwesomeIcon
-                icon={faPlus}
-                className="w-4 h-4 mr-2 text-slate-700"
-              />
-              <span className="text-slate-800">Ana Özellik Oluştur</span>
+              <PlusCircleIcon className="w-4 h-4 mr-2" />
+              <span className="text-sm">Ana Özellik Oluştur</span>
             </Button>
           </>
         }
-        title={"Özellikler"}
       />
       <div className="px-4 mt-2">
         <LinkTabs
@@ -122,32 +84,26 @@ const AttributeTypes = () => {
         />
       </div>
       <div className="p-4">
-        {attributeTypes && attributeTypeRows ? (
-          <DataTable
-            className="mt-2"
-            rows={attributeTypeRows}
-            cols={attributeTypeCols}
-          />
+        {attributeTypes ? (
+          <DataTable rows={attributeTypes} columns={columns} />
         ) : (
           <Loading />
         )}
       </div>
 
       <Drawer
-        isOpen={attributeTypeDrawerOpen}
+        isOpen={drawerOpen}
         onClose={() => {
-          setAttributeTypeDrawerOpen(false);
-          setEditAttributeTypeRow(undefined);
+          setDrawerOpen(false);
+          setEditRow(undefined);
         }}
       >
         <UpsertAttributeType
-          attributeType={attributeTypes?.find(
-            (e) => e.id === editAttributeTypeRow
-          )}
+          attributeType={attributeTypes?.find((e) => e.id === editRow)}
           setRows={() => {
             attributeTypesReFetch().then(() => {
-              setAttributeTypeDrawerOpen(false);
-              setEditAttributeTypeRow(undefined);
+              setDrawerOpen(false);
+              setEditRow(undefined);
             });
           }}
         />

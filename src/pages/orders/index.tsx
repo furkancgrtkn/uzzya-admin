@@ -1,92 +1,51 @@
 /* eslint-disable @next/next/no-img-element */
-import { ReactElement, useEffect, useState } from "react";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ReactElement } from "react";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
-import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
+import { Order } from "src/hooks/api/order/types";
 import useOrders from "src/hooks/api/order/useOrders";
 
 const Orders = () => {
-  const [rows, setRows] = useState<DataTableProps["rows"] | null>();
-
   const { data: orders, isError } = useOrders();
 
-  const cols = [
+  const columns: DataTableProps<Order>["columns"] = [
     {
-      name: "Durum",
-      row: "status",
-      visible: true,
+      key: "title",
+      cell: (row) => <>{row.status}</>,
+      header: () => "Status",
+      width: "120px",
+      maxWidth: "120px",
+      sticky: "left",
     },
     {
-      name: "Tarih",
-      row: "updated_at",
-      visible: true,
-    },
-    {
-      name: "Tutar",
-      row: "paid",
-      visible: true,
-    },
-    {
-      name: "Row Options",
-      row: "options",
-      visible: false,
+      key: "actions",
+      cell: (row) => (
+        <div className={"ml-auto flex w-min"}>
+          <button
+            onClick={() => {
+              router.push(`/orders/${row.id}`);
+            }}
+            className={`flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
+          >
+            <EyeIcon className={`w-3.5 h-3.5`} />
+          </button>
+        </div>
+      ),
+      header: () => null,
     },
   ];
 
-  useEffect(() => {
-    if (orders) {
-      setRows(
-        orders.map((e) => {
-          return [
-            {
-              render: e.status.toString(),
-              selector: "status",
-            },
-            {
-              render: new Date(e.updated_at).toLocaleDateString(),
-              selector: "updated_at",
-            },
-
-            {
-              render: e.payment.iyzicoJson.paidPrice + " TRY",
-              selector: "paid",
-            },
-            {
-              render: (
-                <div className={"ml-auto flex w-min"}>
-                  <button
-                    onClick={() => router.push(`/orders/${e.id}`)}
-                    className={`flex disabled:opacity-70 disabled:cursor-not-allowed items-center px-2 py-[6px] ml-auto text-xs leading-none rounded whitespace-nowrap text-slate-800 bg-slate-200`}
-                  >
-                    <FontAwesomeIcon icon={faEye} className={`w-3 h-3`} />
-                  </button>
-                </div>
-              ),
-              selector: "options",
-            },
-          ];
-        })
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orders]);
   const router = useRouter();
   if (isError) {
     return <div>Error</div>;
   }
   return (
     <>
-      <PageHeader className="pl-4" title={"Siparişler"} />
       <div className="p-4">
-        {orders && rows ? (
-          <DataTable className="mt-2" rows={rows} cols={cols} />
-        ) : (
-          <Loading />
-        )}
+        {orders ? <DataTable rows={orders} columns={columns} /> : <Loading />}
       </div>
     </>
   );

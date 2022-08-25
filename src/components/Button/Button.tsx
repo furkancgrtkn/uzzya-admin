@@ -22,7 +22,7 @@ const Button: FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`flex disabled:opacity-70 items-center text-sm justify-center whitespace-nowrap ${
+      className={`flex disabled:opacity-70 items-center justify-center truncate ${
         className || ""
       }`}
     >
