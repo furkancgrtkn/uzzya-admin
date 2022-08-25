@@ -1,15 +1,55 @@
 export type Order = {
   id: number;
-  email: string;
   status: string;
-  updated_at: Date;
-  comment: string | null;
-  rate: number | null;
+  updated_at: string;
+  comment: any;
+  rate: any;
+  user: {
+    email: string;
+    profile: {
+      name: string;
+      phone: string;
+      surname: string;
+    };
+  };
+  shipping: {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    city: string;
+    country: string;
+    post_code: string;
+    address: string;
+    billing_city: string;
+    billing_country: string;
+    billing_post_code: string;
+    billing_address: string;
+    status: string;
+    cost: number;
+    tracking_number: string;
+  };
   payment: {
     id: number;
-    iyzicoJson: any;
+    iyzicoJson: IyzicoJson;
   };
 };
+
+export interface Shipping {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  city: string;
+  country: string;
+  post_code: string;
+  address: string;
+  billing_city: string;
+  billing_country: string;
+  billing_post_code: string;
+  billing_address: string;
+  status: string;
+  cost: number;
+  tracking_number: string;
+}
 
 export interface UniqueOrder {
   id: number;
@@ -29,23 +69,6 @@ export interface UniqueOrder {
   shipping: Shipping;
   payment: Payment;
   products: Product[];
-}
-
-export interface Shipping {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  city: string;
-  country: string;
-  post_code: string;
-  address: string;
-  billing_city: string;
-  billing_country: string;
-  billing_post_code: string;
-  billing_address: string;
-  status: string;
-  cost: number;
-  tracking_number: string;
 }
 
 export interface Payment {
