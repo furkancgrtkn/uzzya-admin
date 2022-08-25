@@ -12,13 +12,13 @@ export default function Drawer({
   return (
     <div
       className={
-        "fixed overflow-hidden z-10 bg-gray-900 bg-opacity-25 inset-0" +
+        "fixed overflow-hidden z-20 bg-black bg-opacity-50 inset-0" +
         (isOpen ? " block " : " hidden ")
       }
     >
       <div
         className={
-          " w-screen max-w-lg right-0 absolute overflow-y-scroll bg-white h-full shadow-xl "
+          " w-screen max-w-2xl right-0 absolute overflow-y-scroll bg-white h-full shadow-2xl "
         }
       >
         {children}

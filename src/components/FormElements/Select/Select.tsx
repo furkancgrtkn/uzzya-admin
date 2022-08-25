@@ -59,7 +59,7 @@ const Select: FC<SelectProps> = ({
           }}
         >
           <XMarkIcon
-            className={`w-[14px] stroke-2 h-[14px] text-brand-black-secondaryLight`}
+            className={`w-[14px] stroke-2 h-[14px] text-brand-black-secondary`}
           />
         </button>
       )}
@@ -79,7 +79,7 @@ const Select: FC<SelectProps> = ({
 
         {!selected && (
           <ChevronDownIcon
-            className={`w-3 h-3 text-brand-black-secondaryLight transform transition-transform duration-200 ${
+            className={`w-3.5 h-3.5 stroke-2 text-brand-black-secondary transform transition-transform duration-200 ${
               open ? "rotate-180" : "rotate-0"
             }`}
           />

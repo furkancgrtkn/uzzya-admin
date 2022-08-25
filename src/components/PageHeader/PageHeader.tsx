@@ -15,7 +15,7 @@ const PageHeader: FC<PageHeaderProps> = ({ className, actions }) => {
       <div className="relative">
         <MagnifyingGlassIcon className="w-4 h-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-brand-black-secondary/90" />
         <input
-          className={`text-[13px] w-[240px] pl-8 py-1 text-brand-black-secondary font-normal border rounded border-brand-black-secondaryLight  focus:ring-transparent focus:border-brand-black-secondaryLight`}
+          className={`text-[13px] w-[240px] pl-8 py-1 text-brand-black-secondary font-normal border rounded border-brand-black-secondaryLight focus:ring-transparent focus:border-brand-black-secondaryLight`}
           type="text"
         />
       </div>

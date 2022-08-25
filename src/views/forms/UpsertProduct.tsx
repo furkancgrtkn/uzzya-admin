@@ -5,9 +5,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDropzone } from "react-dropzone";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import { MultipleSelect, Select } from "src/components/FormElements/Select";
+import FormHeader from "src/components/FormHeader";
 import Loading from "src/components/Loading";
 import useAttributes from "src/hooks/api/attributes/useAttributes";
 import useCategories from "src/hooks/api/category/useCategories";
@@ -185,8 +185,12 @@ const UpsertProduct = ({
   }, [product, setValue]);
 
   return attributes && categories && products ? (
-    <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormHeader
+        title={product ? "Ürünü Güncelle" : "Yeni Ürün Oluştur"}
+        loading={postLoad}
+      />
+      <div className="p-4 grid gap-4 grid-cols-1">
         <fieldset className="grid grid-cols-2 gap-4">
           <Input
             props={{
@@ -437,17 +441,7 @@ const UpsertProduct = ({
             </div>
           )}
         </div>
-
-        <div className="flex justify-end w-full">
-          <Button
-            loading={postLoad}
-            type="submit"
-            className="font-medium px-5 py-1.5 rounded text-sm text-white bg-brand-palette-primary"
-          >
-            {product ? "Güncelle" : "Oluştur"}
-          </Button>
-        </div>
-      </>
+      </div>
     </form>
   ) : (
     <Loading />

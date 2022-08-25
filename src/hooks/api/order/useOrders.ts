@@ -16,6 +16,15 @@ export default function useOrders() {
           updated_at: true,
           comment: true,
           rate: true,
+          user: {
+            select: {
+              email: true,
+              profile: {
+                select: { name: true, phone: true, surname: true },
+              },
+            },
+          },
+          shipping: true,
           payment: {
             select: {
               id: true,

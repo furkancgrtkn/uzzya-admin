@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
 import { Select } from "src/components/FormElements/Select";
+import FormHeader from "src/components/FormHeader";
 import {
   AttributeType,
   AttributeTypeType,
@@ -26,11 +26,11 @@ const schema = yup
   })
   .required();
 const UpsertAttribute = ({
-  setRows,
+  onSuccess,
   attributeTypes,
   attribute,
 }: {
-  setRows: () => void;
+  onSuccess?: () => void;
   attributeTypes: AttributeTypeType[];
   attribute?: AttributeType;
 }) => {
@@ -73,7 +73,9 @@ const UpsertAttribute = ({
       });
 
       toast.success("İşlem Başarılı");
-      setRows();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       toast.error("Hata");
     } finally {
@@ -82,52 +84,41 @@ const UpsertAttribute = ({
   };
 
   return (
-    <>
-      <div className="p-3">
-        <form
-          className="grid grid-cols-1 gap-4"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Input
-            props={{ ...register("value"), placeholder: "Örn. Renk" }}
-            error={errors.value?.message}
-            label="Özellik Adı"
-          />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormHeader
+        title={attribute ? "Özelliği Güncelle" : "Yeni Özellik Oluştur"}
+        loading={postLoad}
+      />
+      <div className="grid grid-cols-1 gap-4 p-4">
+        <Input
+          props={{ ...register("value"), placeholder: "Örn. Renk" }}
+          error={errors.value?.message}
+          label="Özellik Adı"
+        />
 
-          <Controller
-            control={control}
-            name="attribute_type_id"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <Select
-                label="Özellik Tipi"
-                onChange={(e) => {
-                  onChange(e);
-                }}
-                selected={value}
-                options={attributeTypes.map((el) => {
-                  return {
-                    value: el.id,
-                    label: el.title,
-                    filterValue: el.title,
-                  };
-                })}
-                error={error?.message}
-              />
-            )}
-          />
-
-          <div className="flex justify-end w-full">
-            <Button
-              loading={postLoad}
-              type="submit"
-              className="font-medium px-3 py-2 rounded text-white bg-brand-green"
-            >
-              {attribute ? "Güncelle" : "Oluştur"}
-            </Button>
-          </div>
-        </form>
+        <Controller
+          control={control}
+          name="attribute_type_id"
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <Select
+              label="Özellik Tipi"
+              onChange={(e) => {
+                onChange(e);
+              }}
+              selected={value}
+              options={attributeTypes.map((el) => {
+                return {
+                  value: el.id,
+                  label: el.title,
+                  filterValue: el.title,
+                };
+              })}
+              error={error?.message}
+            />
+          )}
+        />
       </div>
-    </>
+    </form>
   );
 };
 export default UpsertAttribute;

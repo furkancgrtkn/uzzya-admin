@@ -42,7 +42,7 @@ const DataTable = <T extends object>({
                   minWidth: col.minWidth || "150px",
                 }}
                 key={col.key}
-                className="px-3 py-1.5 bg-white text-brand-black-primary/80 font-medium text-sm"
+                className="px-3 py-1.5 whitespace-nowrap bg-white text-brand-black-primary/80 font-medium text-sm"
               >
                 {col.header()}
               </th>

@@ -21,7 +21,7 @@ const Input: FC<InputProps> = ({
     <div className={`flex w-full flex-col ${wrapperClass || ""}`}>
       {label && <Label className="mb-0.5">{label}</Label>}
       <input
-        className={`text-sm w-full placeholder:text-brand-black-secondaryLight font-normal border text-brand-black-primary rounded border-brand-black-secondaryLight  focus:ring-transparent focus:border-brand-black-secondaryLight ${
+        className={`text-sm w-full placeholder:text-brand-black-secondaryLight font-normal border text-brand-black-primary rounded border-brand-black-secondaryLight focus:ring-transparent focus:border-brand-black-secondaryLight ${
           className || ""
         }`}
         type="text"

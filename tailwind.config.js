@@ -13,6 +13,7 @@ module.exports = {
         brand: {
           palette: {
             primary: "#437EFD",
+            primaryLight: "#EEF3FF",
           },
           black: {
             primary: "#484848",

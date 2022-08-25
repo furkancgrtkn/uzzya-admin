@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Button from "src/components/Button";
 import Input from "src/components/FormElements/Input";
+import FormHeader from "src/components/FormHeader";
 import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import axiosInstance from "src/utils/axiosInstance";
 import * as yup from "yup";
@@ -20,10 +20,10 @@ const schema = yup
   })
   .required();
 const UpsertAttributeType = ({
-  setRows,
+  onSuccess,
   attributeType,
 }: {
-  setRows: () => void;
+  onSuccess: () => void;
   attributeType?: AttributeTypeType;
 }) => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
@@ -63,7 +63,9 @@ const UpsertAttributeType = ({
       });
 
       toast.success("İşlem Başarılı");
-      setRows();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       toast.error("Hata");
     } finally {
@@ -72,30 +74,19 @@ const UpsertAttributeType = ({
   };
 
   return (
-    <>
-      <div className="p-3">
-        <form
-          className="grid grid-cols-1 gap-4"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Input
-            props={{ ...register("title"), placeholder: "Örn. Renk" }}
-            error={errors.title?.message}
-            label="Ana Özellik Adı"
-          />
-
-          <div className="flex justify-end w-full">
-            <Button
-              loading={postLoad}
-              type="submit"
-              className="font-medium px-3 py-2 rounded text-white bg-brand-green"
-            >
-              {attributeType ? "Güncelle" : "Oluştur"}
-            </Button>
-          </div>
-        </form>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormHeader
+        title={attributeType ? "Tipi Güncelle" : "Yeni Tip Oluştur"}
+        loading={postLoad}
+      />
+      <div className="grid grid-cols-1 gap-4 p-4">
+        <Input
+          props={{ ...register("title"), placeholder: "Örn. Renk" }}
+          error={errors.title?.message}
+          label="Ana Özellik Adı"
+        />
       </div>
-    </>
+    </form>
   );
 };
 export default UpsertAttributeType;

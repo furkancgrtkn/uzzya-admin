@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useState } from "react";
-import { PlusCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon, PencilIcon } from "@heroicons/react/24/outline";
 import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
 import Default from "src/components/Layout/Default";
@@ -26,10 +26,7 @@ const AttributeTypes = () => {
     {
       key: "title",
       cell: (row) => <>{row.title}</>,
-      header: () => "Title",
-      width: "120px",
-      maxWidth: "120px",
-      sticky: "left",
+      header: () => "Tip",
     },
     {
       key: "actions",
@@ -42,7 +39,7 @@ const AttributeTypes = () => {
             }}
             className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
           >
-            <EyeIcon className={`w-3.5 h-3.5`} />
+            <PencilIcon className={`w-3.5 h-3.5`} />
           </button>
           <TrashBtn
             endPoint={`/category/delete/${row.id}`}
@@ -100,7 +97,7 @@ const AttributeTypes = () => {
       >
         <UpsertAttributeType
           attributeType={attributeTypes?.find((e) => e.id === editRow)}
-          setRows={() => {
+          onSuccess={() => {
             attributeTypesReFetch().then(() => {
               setDrawerOpen(false);
               setEditRow(undefined);
