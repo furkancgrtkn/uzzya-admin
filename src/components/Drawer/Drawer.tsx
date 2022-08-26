@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { Transition } from "@headlessui/react";
 
 export default function Drawer({
   children,
@@ -10,25 +11,29 @@ export default function Drawer({
   onClose: () => void;
 }) {
   return (
-    <div
-      className={
-        "fixed overflow-hidden z-20 bg-black bg-opacity-50 inset-0" +
-        (isOpen ? " block " : " hidden ")
-      }
+    <Transition
+      className={"fixed overflow-hidden z-20 bg-black bg-opacity-50 inset-0"}
+      as="div"
+      show={isOpen}
     >
-      <div
-        className={
-          " w-screen max-w-2xl right-0 absolute overflow-y-scroll bg-white h-full shadow-2xl "
-        }
+      <Transition.Child
+        enter="transition-transform duration-300"
+        enterFrom="translate-x-[100%]"
+        enterTo="translate-x-[0px]"
+        leave="transition-transform duration-300"
+        leaveFrom="translate-x-[0px]"
+        leaveTo="translate-x-[100%]"
+        as="div"
+        className="w-screen max-w-2xl right-0 absolute overflow-y-auto bg-white h-full shadow-2xl"
       >
         {children}
-      </div>
+      </Transition.Child>
       <div
         className=" w-screen h-full "
         onClick={() => {
           onClose();
         }}
       ></div>
-    </div>
+    </Transition>
   );
 }

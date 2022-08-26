@@ -15,6 +15,7 @@ interface SelectProps {
   // eslint-disable-next-line no-unused-vars
   onChange: (val: string | undefined) => void;
   error?: string;
+  filter?: boolean;
   label: string;
 }
 
@@ -24,6 +25,7 @@ const Select: FC<SelectProps> = ({
   disabled,
   selected,
   label,
+  filter,
   options,
 }) => {
   const [open, setOpen] = useState(false);
@@ -52,7 +54,9 @@ const Select: FC<SelectProps> = ({
           }}
         >
           <XMarkIcon
-            className={`w-[14px] stroke-2 h-[14px] text-brand-black-secondary`}
+            className={`w-[14px] stroke-2 h-[14px] ${
+              open ? "text-brand-palette-primary" : "text-brand-black-secondary"
+            }`}
           />
         </button>
       )}
@@ -69,15 +73,15 @@ const Select: FC<SelectProps> = ({
       >
         {options?.filter((option: any) => option.value === selected)[0]?.label}
         <span
-          className={`absolute left-2 !leading-none transition-all px-1 bg-white ${
+          className={`absolute  transform -translate-y-1/2 left-2 !leading-none transition-all px-1 bg-white ${
             options?.filter((option: any) => option.value === selected)[0]
               ?.label || open
               ? `text-xs ${
                   open
                     ? "text-brand-palette-primary"
                     : "text-brand-black-primary"
-                } top-0 transform -translate-y-1/2`
-              : "text-brand-black-secondary"
+                } top-0`
+              : "text-brand-black-secondary top-1/2"
           }`}
         >
           {disabled ? "Disabled" : label}
@@ -99,24 +103,28 @@ const Select: FC<SelectProps> = ({
         <div
           className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-brand-black-primary top-12`}
         >
-          <div className="w-full">
-            <input
-              onChange={(e) => {
-                setOptionState(
-                  options.filter((option) =>
-                    option.filterValue
-                      ?.toLowerCase()
-                      .includes(e.target.value.toLowerCase())
-                  )
-                );
-              }}
-              placeholder="Search"
-              className="w-full px-3 py-1.5 text-xs border border-b-0 rounded-t border-brand-black-secondaryLight"
-            />
-          </div>
+          {filter && (
+            <div className="w-full">
+              <input
+                onChange={(e) => {
+                  setOptionState(
+                    options.filter((option) =>
+                      option.filterValue
+                        ?.toLowerCase()
+                        .includes(e.target.value.toLowerCase())
+                    )
+                  );
+                }}
+                placeholder="Search"
+                className="w-full px-3 py-1.5 text-xs border border-b-0 rounded-t border-brand-black-secondaryLight"
+              />
+            </div>
+          )}
 
           <div
-            className={`h-full overflow-y-scroll origin-top bg-white border rounded-b border-brand-black-secondaryLight max-h-60`}
+            className={`h-full overflow-y-scroll origin-top bg-white border ${
+              filter ? "rounded-b" : "rounded"
+            } border-brand-black-secondaryLight max-h-60`}
           >
             {optionsState.length === 0 ? (
               <div className={`px-3 py-2 text-xs select-none`}>

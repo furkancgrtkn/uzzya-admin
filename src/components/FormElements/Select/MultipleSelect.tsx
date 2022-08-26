@@ -14,6 +14,7 @@ interface MultipleSelectProps {
   // eslint-disable-next-line no-unused-vars
   onChange: (val: string | []) => void;
   error?: string;
+  filter?: boolean;
   label: string;
 }
 
@@ -21,6 +22,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   error,
   onChange,
   disabled,
+  filter,
   selecteds,
   label,
   options,
@@ -51,7 +53,9 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           }}
         >
           <XMarkIcon
-            className={`w-[14px] h-[14px] stroke-2 text-brand-black-secondary`}
+            className={`w-[14px] h-[14px] stroke-2 ${
+              open ? "text-brand-palette-primary" : "text-brand-black-secondary"
+            }`}
           />
         </button>
       )}
@@ -78,14 +82,14 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
         )}
 
         <span
-          className={`absolute left-2 !leading-none transition-all px-1 bg-white ${
+          className={`absolute  transform -translate-y-1/2 left-2 !leading-none transition-all px-1 bg-white ${
             selecteds.length > 0 || open
               ? `text-xs ${
                   open
                     ? "text-brand-palette-primary"
                     : "text-brand-black-primary"
-                } top-0 transform -translate-y-1/2`
-              : "text-brand-black-secondary"
+                } top-0`
+              : "text-brand-black-secondary top-1/2"
           }`}
         >
           {disabled ? "Disabled" : label}
@@ -108,24 +112,28 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
         <div
           className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-brand-black-primary top-12`}
         >
-          <div className="w-full">
-            <input
-              onChange={(e) => {
-                setOptionState(
-                  options.filter((option) =>
-                    option.filterValue
-                      ?.toLowerCase()
-                      .includes(e.target.value.toLowerCase())
-                  )
-                );
-              }}
-              placeholder="Search"
-              className="w-full px-2 py-1.5 text-xs border border-b-0 rounded-t border-brand-black-secondaryLight"
-            />
-          </div>
+          {filter && (
+            <div className="w-full">
+              <input
+                onChange={(e) => {
+                  setOptionState(
+                    options.filter((option) =>
+                      option.filterValue
+                        ?.toLowerCase()
+                        .includes(e.target.value.toLowerCase())
+                    )
+                  );
+                }}
+                placeholder="Search"
+                className="w-full px-2 py-1.5 text-xs border border-b-0 rounded-t border-brand-black-secondaryLight"
+              />
+            </div>
+          )}
 
           <div
-            className={`h-full overflow-y-scroll origin-top bg-white border rounded-b border-brand-black-secondaryLight max-h-60`}
+            className={`h-full overflow-y-scroll origin-top bg-white border ${
+              filter ? "rounded-b" : "rounded"
+            } border-brand-black-secondaryLight max-h-60`}
           >
             {optionsState.length === 0 ? (
               <div className={`px-2 py-2 text-xs select-none`}>

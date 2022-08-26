@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import ViewBtn from "src/components/GlobalElements/ViewBtn";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
+import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
 import { Order } from "src/hooks/api/order/types";
 import useOrders from "src/hooks/api/order/useOrders";
@@ -90,6 +91,7 @@ const Orders = () => {
   }
   return (
     <>
+      <PageHeader />
       <div className="p-3">
         {orders ? <DataTable rows={orders} columns={columns} /> : <Loading />}
       </div>

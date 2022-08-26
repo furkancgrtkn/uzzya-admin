@@ -155,7 +155,7 @@ const UpsertCategory = ({
       <FormHeader
         title={category ? "Kategoriyi Güncelle" : "Yeni Kategori Oluştur"}
       />
-      <div className="grid grid-cols-1 gap-4 p-4">
+      <div className="grid grid-cols-2 gap-4 p-4">
         <Input
           props={{ ...register("title"), placeholder: "Örn. Altin Kolye" }}
           error={errors.title?.message}
@@ -219,7 +219,7 @@ const UpsertCategory = ({
             />
           )}
         />
-        <div className="w-full">
+        <div className="w-full col-span-2">
           {currentImage && (
             <div className="mb-2">
               <img

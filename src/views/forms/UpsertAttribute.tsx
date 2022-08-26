@@ -91,7 +91,7 @@ const UpsertAttribute = ({
       <FormHeader
         title={attribute ? "Özelliği Güncelle" : "Yeni Özellik Oluştur"}
       />
-      <div className="grid grid-cols-1 gap-4 p-4">
+      <div className="grid grid-cols-2 gap-4 p-4">
         <Input
           props={{ ...register("value"), placeholder: "Örn. Renk" }}
           error={errors.value?.message}

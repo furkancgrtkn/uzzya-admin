@@ -73,11 +73,11 @@ const ProductCard = ({
         <div className="text-sm">Barkod: {data.product.barcode}</div>
         <div className="text-sm">Stok: {data.product.stock}</div>
       </div>
-      <div className="flex mt-2 flex-wrap    items-center justify-between">
+      <div className="flex mt-2 flex-wrap items-center">
         {data.product.attributes.map((e) => (
           <div
             key={e.attribute.id}
-            className="text-sm py-0.5 px-1.5 mr-1 mb-1 bg-brand-black-secondaryLight/20 rounded"
+            className="text-sm py-0.5 px-1.5 mr-1 mb-1 border border-brand-black-secondaryLight rounded"
           >
             {e.attribute.attribute_type.title}: {e.attribute.value}
           </div>
@@ -192,7 +192,7 @@ const Orders = () => {
           />
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="col-span-2 flex flex-col"
+            className="col-span-2 bg-white pt-5 pb-3 px-4 border border-brand-black-secondaryLight rounded flex flex-col"
           >
             <Input
               label="Takip Numarası"
@@ -206,7 +206,7 @@ const Orders = () => {
             <Button
               loading={postLoad}
               type="submit"
-              className="ml-auto mt-2 bg-brand-palette-primary text-white text-sm px-5 py-1.5 rounded font-medium"
+              className="font-medium px-3 py-1.5 ml-auto mt-3 rounded text-sm bg-brand-palette-primary border border-brand-palette-primary  text-white"
             >
               {order.shipping.tracking_number ? "Güncelle" : "Gönderimi Onayla"}
             </Button>

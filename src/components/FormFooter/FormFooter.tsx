@@ -9,7 +9,7 @@ interface FormFooterProps {
 
 const FormFooter: FC<FormFooterProps> = ({ loading, onCancel }) => {
   return (
-    <div className="flex sticky bottom-0 mt-auto bg-white py-4 px-4 border-t border-brand-black-secondaryLight items-center justify-end">
+    <div className="flex sticky z-30 bottom-0 mt-auto bg-white py-4 px-4 border-t border-brand-black-secondaryLight items-center justify-end">
       <Button
         loading={loading}
         onClick={() => onCancel()}

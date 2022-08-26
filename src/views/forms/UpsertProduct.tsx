@@ -7,6 +7,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "src/components/FormElements/Input";
 import { MultipleSelect, Select } from "src/components/FormElements/Select";
+import TextArea from "src/components/FormElements/TextArea";
 import FormFooter from "src/components/FormFooter";
 import FormHeader from "src/components/FormHeader";
 import Loading from "src/components/Loading";
@@ -33,7 +34,7 @@ interface UpsertProductRequest {
   discount_rate: number;
   category_id: string;
   attributes: string[];
-  published: boolean;
+  published: string;
 }
 
 const schema = yup
@@ -47,7 +48,7 @@ const schema = yup
     barcode: yup.string().required("Bu Alan Zorunludur."),
     stock: yup.number().required("Bu Alan Zorunludur."),
     price: yup.number().required("Bu Alan Zorunludur."),
-    published: yup.boolean().required("Bu Alan Zorunludur."),
+    published: yup.string().required("Bu Alan Zorunludur."),
     discounted_price: yup.number().required("Bu Alan Zorunludur."),
     discount_rate: yup.number().required("Bu Alan Zorunludur."),
     category_id: yup.string().required("Bu Alan Zorunludur."),
@@ -113,6 +114,7 @@ const UpsertProduct = ({
       const { data: prod } = await axiosInstance.post("/product/upsert", {
         create: {
           ...data,
+          published: data.published === "published",
           attributes: {
             create: data.attributes.map((e) => {
               return { attribute: { connect: { id: e } } };
@@ -121,6 +123,7 @@ const UpsertProduct = ({
         },
         update: {
           ...data,
+          published: data.published === "published",
           images: currentImages,
           thumbnail: currentThumbnail,
           attributes: {
@@ -270,20 +273,73 @@ const UpsertProduct = ({
             label="Stok"
           />
         </fieldset>
-        <div className="flex justify-end items-center">
-          <label
-            className="flex select-none cursor-pointer items-center"
-            htmlFor="published"
-          >
-            <input
-              id="published"
-              {...register("published")}
-              className="text-brand-black-primary rounded-sm focus:ring-transparent"
-              type="checkbox"
-            />
-            <span className="text-sm ml-1">Yayınla</span>
-          </label>
-        </div>
+        <fieldset className="grid grid-cols-2 gap-4">
+          <Controller
+            control={control}
+            name="published"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Select
+                label="Durum"
+                onChange={(e) => {
+                  onChange(e);
+                }}
+                selected={value}
+                options={[
+                  {
+                    value: "published",
+                    label: "Yayınlandı",
+                    filterValue: "Yayınlandı",
+                  },
+                  {
+                    value: "draft",
+                    label: "Hazırlanıyor",
+                    filterValue: "Hazırlanıyor",
+                  },
+                ]}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="attributes"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <MultipleSelect
+                label="Özellikler"
+                onChange={(e) => {
+                  if (typeof e === "string") {
+                    if (value.includes(e)) {
+                      onChange(value.filter((el) => el !== e));
+                    } else {
+                      onChange([...value, e]);
+                    }
+                  } else {
+                    onChange(e);
+                  }
+                }}
+                selecteds={value}
+                options={
+                  attributes.map((el) => {
+                    return {
+                      value: el.id,
+                      label: (
+                        <span>
+                          {el.value}{" "}
+                          <span className="text-xs opacity-50">
+                            {el.attribute_type.title}
+                          </span>{" "}
+                        </span>
+                      ),
+                      filterValue: el.value,
+                    };
+                  })!
+                }
+                error={error?.message}
+              />
+            )}
+          />
+        </fieldset>
+
         <fieldset className="grid grid-cols-2 gap-4">
           <Controller
             control={control}
@@ -335,14 +391,6 @@ const UpsertProduct = ({
             )}
           />
         </fieldset>
-        <Input
-          props={{
-            ...register("description"),
-            placeholder: "Örn. altin-kolye",
-          }}
-          error={errors.description?.message}
-          label="Açıklama"
-        />
 
         <Input
           props={{
@@ -353,44 +401,15 @@ const UpsertProduct = ({
           label="Kısa Açıklama"
         />
 
-        <Controller
-          control={control}
-          name="attributes"
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <MultipleSelect
-              label="Özellikler"
-              onChange={(e) => {
-                if (typeof e === "string") {
-                  if (value.includes(e)) {
-                    onChange(value.filter((el) => el !== e));
-                  } else {
-                    onChange([...value, e]);
-                  }
-                } else {
-                  onChange(e);
-                }
-              }}
-              selecteds={value}
-              options={
-                attributes.map((el) => {
-                  return {
-                    value: el.id,
-                    label: (
-                      <span>
-                        {el.value}{" "}
-                        <span className="text-xs opacity-50">
-                          {el.attribute_type.title}
-                        </span>{" "}
-                      </span>
-                    ),
-                    filterValue: el.value,
-                  };
-                })!
-              }
-              error={error?.message}
-            />
-          )}
+        <TextArea
+          props={{
+            ...register("description"),
+            placeholder: "Örn. altin-kolye",
+          }}
+          error={errors.description?.message}
+          label="Açıklama"
         />
+
         <div className="flex flex-col w-full">
           {currentImages && currentThumbnail && (
             <div className="flex overflow-x-auto items-center space-x-3 mb-2">
