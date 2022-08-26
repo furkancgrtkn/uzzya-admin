@@ -7,6 +7,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "src/components/FormElements/Input";
 import { MultipleSelect, Select } from "src/components/FormElements/Select";
+import FormFooter from "src/components/FormFooter";
 import FormHeader from "src/components/FormHeader";
 import Loading from "src/components/Loading";
 import useAttributes from "src/hooks/api/attributes/useAttributes";
@@ -60,9 +61,11 @@ const schema = yup
   .required();
 const UpsertProduct = ({
   onSuccess,
+  onCancel,
   product,
 }: {
   onSuccess?: () => void;
+  onCancel?: () => void;
   product?: ProductType;
 }) => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
@@ -73,6 +76,7 @@ const UpsertProduct = ({
   const {
     register,
     setValue,
+    reset,
     handleSubmit,
     control,
     formState: { errors },
@@ -183,15 +187,16 @@ const UpsertProduct = ({
 
       setCurrentImages(product.images);
       setCurrentThumnail(product.thumbnail);
+    } else if (!product) {
+      reset();
+      setCurrentImages(undefined);
+      setCurrentThumnail(undefined);
     }
-  }, [product, setValue]);
+  }, [product, reset, setValue]);
 
   return attributes && categories && products ? (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormHeader
-        title={product ? "Ürünü Güncelle" : "Yeni Ürün Oluştur"}
-        loading={postLoad}
-      />
+    <form className="flex flex-col h-full" onSubmit={handleSubmit(onSubmit)}>
+      <FormHeader title={product ? "Ürünü Güncelle" : "Yeni Ürün Oluştur"} />
       <div className="p-4 grid gap-4 grid-cols-1">
         <fieldset className="grid grid-cols-2 gap-4">
           <Input
@@ -457,6 +462,12 @@ const UpsertProduct = ({
           )}
         </div>
       </div>
+      <FormFooter
+        onCancel={() => {
+          if (onCancel) onCancel();
+        }}
+        loading={postLoad}
+      />
     </form>
   ) : (
     <Loading />

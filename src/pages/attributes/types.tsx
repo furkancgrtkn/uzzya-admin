@@ -1,13 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useState } from "react";
-import { PlusCircleIcon, PencilIcon } from "@heroicons/react/24/outline";
-import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
+import { CreateBtn, EditBtn, TrashBtn } from "src/components/GlobalElements";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
-import { TrashBtn } from "src/components/Table/Elements";
 import { LinkTabs } from "src/components/Tabs";
 import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import useAttributeTypes from "src/hooks/api/attributes/useAttributeTypes";
@@ -32,15 +30,12 @@ const AttributeTypes = () => {
       key: "actions",
       cell: (row) => (
         <div className={"ml-auto flex w-min"}>
-          <button
+          <EditBtn
             onClick={() => {
               setEditRow(row.id);
               setDrawerOpen(true);
             }}
-            className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
-          >
-            <PencilIcon className={`w-3.5 h-3.5`} />
-          </button>
+          />
           <TrashBtn
             endPoint={`/category/delete/${row.id}`}
             onSuccess={() => {}}
@@ -58,18 +53,13 @@ const AttributeTypes = () => {
     <>
       <PageHeader
         actions={
-          <>
-            <Button
-              className="w-full py-1.5 rounded my-auto h-min px-4 border border-brand-palette-primary text-brand-palette-primary"
-              onClick={() => {
-                setEditRow(undefined);
-                setDrawerOpen(true);
-              }}
-            >
-              <PlusCircleIcon className="w-4 h-4 mr-2" />
-              <span className="text-sm">Ana Özellik Oluştur</span>
-            </Button>
-          </>
+          <CreateBtn
+            onClick={() => {
+              setEditRow(undefined);
+              setDrawerOpen(true);
+            }}
+            label="Tip Oluştur"
+          />
         }
       />
       <div className="px-3 mt-1">

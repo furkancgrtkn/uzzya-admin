@@ -2,7 +2,6 @@ import { FC, ReactNode, useRef, useState } from "react";
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useOnClickOutside } from "usehooks-ts";
 import ErrorMessage from "../ErrorMessage";
-import Label from "../Label";
 
 interface MultipleSelectProps {
   options: {
@@ -43,22 +42,16 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
         disabled ? "opacity-70 cursor-not-allowed" : ""
       }`}
     >
-      <Label className="mb-0.5" htmlFor="parent_id">
-        {label}
-      </Label>
-
       {selecteds.length > 0 && (
         <button
           type="button"
-          className={`absolute z-20 w-[14px] h-[14px] right-3 ${
-            label ? "top-[28px]" : "top-[7px]"
-          } transfrom`}
+          className={`absolute z-20 w-[14px] h-[14px] right-3 top-[14px] transfrom`}
           onClick={() => {
             onChange([]);
           }}
         >
           <XMarkIcon
-            className={`w-[14px] h-[14px] text-brand-black-secondary`}
+            className={`w-[14px] h-[14px] stroke-2 text-brand-black-secondary`}
           />
         </button>
       )}
@@ -67,31 +60,43 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           setOpen(disabled ? false : !open);
           setOptionState(options);
         }}
-        className="relative cursor-pointer z-10 flex items-center justify-between w-full h-[38px] px-3 text-sm font-normal bg-white border rounded text-brand-black-primary border-brand-black-secondaryLight  focus:ring-transparent focus:border-brand-black-secondaryLight"
+        className={`relative cursor-pointer z-10 flex items-center justify-between w-full h-[42px] px-3 text-sm font-normal bg-white border rounded text-brand-black-primary ${
+          open
+            ? "border-brand-palette-primary"
+            : "border-brand-black-secondaryLight"
+        }`}
       >
-        {selecteds.length > 0 ? (
+        {selecteds.length > 0 && (
           <div className="overflow-x-auto flex whitespace-nowrap mr-5">
             {options.map((e) => {
               if (selecteds.includes(e.value)) {
-                return (
-                  <span className="bg-brand-black-primary/10 rounded mr-1.5 px-1 py-0.5">
-                    {e.label}
-                  </span>
-                );
+                return <span className="mr-1.5">{e.label},</span>;
               }
               return null;
             })}
           </div>
-        ) : (
-          <span className="text-brand-black-secondaryLight">
-            {disabled ? "Disabled" : "Select options"}
-          </span>
         )}
+
+        <span
+          className={`absolute left-2 !leading-none transition-all px-1 bg-white ${
+            selecteds.length > 0 || open
+              ? `text-xs ${
+                  open
+                    ? "text-brand-palette-primary"
+                    : "text-brand-black-primary"
+                } top-0 transform -translate-y-1/2`
+              : "text-brand-black-secondary"
+          }`}
+        >
+          {disabled ? "Disabled" : label}
+        </span>
 
         {selecteds.length === 0 && (
           <ChevronDownIcon
-            className={`w-3.5 h-3.5 stroke-2 text-brand-black-secondary transform transition-transform duration-200 ${
-              open ? "rotate-180" : "rotate-0"
+            className={`w-3.5 h-3.5 ml-auto stroke-2 transform transition-transform duration-200 ${
+              open
+                ? "rotate-180 text-brand-palette-primary "
+                : "rotate-0 text-brand-black-secondary "
             }`}
           />
         )}
@@ -101,9 +106,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
       {open && (
         <div
-          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterMultipleSelect text-brand-black-primary ${
-            label ? "top-[66px]" : "top-11"
-          }`}
+          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-brand-black-primary top-12`}
         >
           <div className="w-full">
             <input

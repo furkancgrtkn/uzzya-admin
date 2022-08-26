@@ -2,7 +2,6 @@ import { FC, ReactNode, useRef, useState } from "react";
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useOnClickOutside } from "usehooks-ts";
 import ErrorMessage from "../ErrorMessage";
-import Label from "../Label";
 
 interface SelectProps {
   options: {
@@ -44,16 +43,10 @@ const Select: FC<SelectProps> = ({
         disabled ? "opacity-70 cursor-not-allowed" : ""
       }`}
     >
-      <Label className="mb-0.5" htmlFor="parent_id">
-        {label}
-      </Label>
-
       {selected && (
         <button
           type="button"
-          className={`absolute z-20 w-[14px] h-[14px] right-3 ${
-            label ? "top-[34px]" : "top-[7px]"
-          } transfrom`}
+          className={`absolute z-20 w-[14px] h-[14px] right-3 top-[14px] transfrom`}
           onClick={() => {
             onChange(undefined);
           }}
@@ -68,19 +61,33 @@ const Select: FC<SelectProps> = ({
           setOpen(disabled ? false : !open);
           setOptionState(options);
         }}
-        className="relative cursor-pointer z-10 flex items-center justify-between w-full h-[38px] px-3 text-sm font-normal bg-white border rounded text-brand-black-primary border-brand-black-secondaryLight  focus:ring-transparent focus:border-brand-black-secondaryLight"
+        className={`relative cursor-pointer z-10 flex items-center justify-between w-full h-[42px] px-3 text-sm font-normal bg-white border rounded text-brand-black-primary ${
+          open
+            ? "border-brand-palette-primary"
+            : "border-brand-black-secondaryLight"
+        }`}
       >
-        {options?.filter((option: any) => option.value === selected)[0]
-          ?.label || (
-          <span className="text-brand-black-secondaryLight">
-            {disabled ? "Disabled" : "Select an option"}
-          </span>
-        )}
-
+        {options?.filter((option: any) => option.value === selected)[0]?.label}
+        <span
+          className={`absolute left-2 !leading-none transition-all px-1 bg-white ${
+            options?.filter((option: any) => option.value === selected)[0]
+              ?.label || open
+              ? `text-xs ${
+                  open
+                    ? "text-brand-palette-primary"
+                    : "text-brand-black-primary"
+                } top-0 transform -translate-y-1/2`
+              : "text-brand-black-secondary"
+          }`}
+        >
+          {disabled ? "Disabled" : label}
+        </span>
         {!selected && (
           <ChevronDownIcon
-            className={`w-3.5 h-3.5 stroke-2 text-brand-black-secondary transform transition-transform duration-200 ${
-              open ? "rotate-180" : "rotate-0"
+            className={`w-3.5 h-3.5 ml-auto stroke-2 transform transition-transform duration-200 ${
+              open
+                ? "rotate-180 text-brand-palette-primary "
+                : "rotate-0 text-brand-black-secondary "
             }`}
           />
         )}
@@ -90,9 +97,7 @@ const Select: FC<SelectProps> = ({
 
       {open && (
         <div
-          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-brand-black-primary ${
-            label ? "top-[66px]" : "top-11"
-          }`}
+          className={`absolute left-0 z-20 w-full pb-4 text-sm origin-top max-h-64 animate-enterSelect text-brand-black-primary top-12`}
         >
           <div className="w-full">
             <input

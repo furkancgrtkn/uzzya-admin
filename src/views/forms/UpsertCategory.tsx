@@ -6,6 +6,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "src/components/FormElements/Input";
 import { MultipleSelect, Select } from "src/components/FormElements/Select";
+import FormFooter from "src/components/FormFooter";
 import FormHeader from "src/components/FormHeader";
 import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import { Category } from "src/hooks/api/category/types";
@@ -36,10 +37,12 @@ const UpsertCategory = ({
   categories,
   onSuccess,
   category,
+  onCancel,
   attributeTypes,
 }: {
   categories: Category[] | undefined;
   onSuccess: () => void;
+  onCancel?: () => void;
   attributeTypes: AttributeTypeType[];
   category: Category | undefined;
 }) => {
@@ -148,10 +151,9 @@ const UpsertCategory = ({
   }, [category, setValue]);
 
   return categories ? (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col h-full" onSubmit={handleSubmit(onSubmit)}>
       <FormHeader
         title={category ? "Kategoriyi Güncelle" : "Yeni Kategori Oluştur"}
-        loading={postLoad}
       />
       <div className="grid grid-cols-1 gap-4 p-4">
         <Input
@@ -258,6 +260,12 @@ const UpsertCategory = ({
           )}
         </div>
       </div>
+      <FormFooter
+        onCancel={() => {
+          if (onCancel) onCancel();
+        }}
+        loading={postLoad}
+      />
     </form>
   ) : null;
 };

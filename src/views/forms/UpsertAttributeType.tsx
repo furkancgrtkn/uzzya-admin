@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "src/components/FormElements/Input";
+import FormFooter from "src/components/FormFooter";
 import FormHeader from "src/components/FormHeader";
 import { AttributeTypeType } from "src/hooks/api/attributes/types";
 import axiosInstance from "src/utils/axiosInstance";
@@ -21,9 +22,11 @@ const schema = yup
   .required();
 const UpsertAttributeType = ({
   onSuccess,
+  onCancel,
   attributeType,
 }: {
   onSuccess: () => void;
+  onCancel?: () => void;
   attributeType?: AttributeTypeType;
 }) => {
   const [postLoad, setPostLoad] = useState<boolean>(false);
@@ -74,10 +77,9 @@ const UpsertAttributeType = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col h-full" onSubmit={handleSubmit(onSubmit)}>
       <FormHeader
         title={attributeType ? "Tipi Güncelle" : "Yeni Tip Oluştur"}
-        loading={postLoad}
       />
       <div className="grid grid-cols-1 gap-4 p-4">
         <Input
@@ -86,6 +88,12 @@ const UpsertAttributeType = ({
           label="Ana Özellik Adı"
         />
       </div>
+      <FormFooter
+        onCancel={() => {
+          if (onCancel) onCancel();
+        }}
+        loading={postLoad}
+      />
     </form>
   );
 };

@@ -1,14 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement, useEffect, useState } from "react";
-import { PlusCircleIcon, PencilIcon } from "@heroicons/react/24/outline";
 import Badge from "src/components/Badge";
-import Button from "src/components/Button";
 import Drawer from "src/components/Drawer";
+import { CreateBtn, EditBtn, TrashBtn } from "src/components/GlobalElements";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import PageHeader from "src/components/PageHeader";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
-import { TrashBtn } from "src/components/Table/Elements";
 import { ProductType } from "src/hooks/api/products/types";
 import useProducts from "src/hooks/api/products/useProducts";
 import { UpsertProduct } from "src/views/forms";
@@ -78,15 +76,12 @@ const Products = () => {
       key: "actions",
       cell: (row: ProductType) => (
         <div className={"ml-auto flex w-min"}>
-          <button
+          <EditBtn
             onClick={() => {
               setEditRow(row.id);
               setCreateOpen(true);
             }}
-            className={`mr-2 flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
-          >
-            <PencilIcon className={`w-3.5 h-3.5`} />
-          </button>
+          />
           <TrashBtn
             endPoint={`/product/delete/${row.id}`}
             onSuccess={() => {}}
@@ -110,18 +105,13 @@ const Products = () => {
     <>
       <PageHeader
         actions={
-          <>
-            <Button
-              className="w-full hover:bg-brand-palette-primaryLight py-1.5 rounded my-auto h-min px-4 border border-brand-palette-primary text-brand-palette-primary"
-              onClick={() => {
-                setEditRow(undefined);
-                setCreateOpen(true);
-              }}
-            >
-              <PlusCircleIcon className="w-4 h-4 mr-2" />
-              <span className="text-sm">Ürün Oluştur</span>
-            </Button>
-          </>
+          <CreateBtn
+            onClick={() => {
+              setEditRow(undefined);
+              setCreateOpen(true);
+            }}
+            label="Ürün Oluştur"
+          />
         }
       />
       <div className="p-3">
@@ -142,6 +132,7 @@ const Products = () => {
         >
           <UpsertProduct
             product={products.find((e) => e.id === editRow)}
+            onCancel={() => setCreateOpen(false)}
             onSuccess={() => {
               reFetch().then(() => {
                 setEditRow(undefined);

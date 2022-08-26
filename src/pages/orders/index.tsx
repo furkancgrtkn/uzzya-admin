@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactElement } from "react";
-import { EyeIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
+import ViewBtn from "src/components/GlobalElements/ViewBtn";
 import Default from "src/components/Layout/Default";
 import Loading from "src/components/Loading";
 import DataTable, { DataTableProps } from "src/components/Table/DataTable";
@@ -73,14 +73,11 @@ const Orders = () => {
       key: "actions",
       cell: (row) => (
         <div className={"ml-auto flex w-min"}>
-          <button
+          <ViewBtn
             onClick={() => {
               router.push(`/orders/${row.id}`);
             }}
-            className={`flex disabled:opacity-70 disabled:cursor-not-allowed hover:bg-brand-yellow-primaryLight items-center justify-center w-7 h-7 ml-auto text-xs leading-none rounded whitespace-nowrap text-brand-yellow-primary border border-brand-yellow-primary`}
-          >
-            <EyeIcon className={`w-3.5 h-3.5`} />
-          </button>
+          />
         </div>
       ),
       header: () => null,

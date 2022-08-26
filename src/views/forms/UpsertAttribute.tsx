@@ -5,6 +5,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "src/components/FormElements/Input";
 import { Select } from "src/components/FormElements/Select";
+import FormFooter from "src/components/FormFooter";
 import FormHeader from "src/components/FormHeader";
 import {
   AttributeType,
@@ -29,8 +30,10 @@ const UpsertAttribute = ({
   onSuccess,
   attributeTypes,
   attribute,
+  onCancel,
 }: {
   onSuccess?: () => void;
+  onCancel?: () => void;
   attributeTypes: AttributeTypeType[];
   attribute?: AttributeType;
 }) => {
@@ -84,10 +87,9 @@ const UpsertAttribute = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col h-full" onSubmit={handleSubmit(onSubmit)}>
       <FormHeader
         title={attribute ? "Özelliği Güncelle" : "Yeni Özellik Oluştur"}
-        loading={postLoad}
       />
       <div className="grid grid-cols-1 gap-4 p-4">
         <Input
@@ -118,6 +120,12 @@ const UpsertAttribute = ({
           )}
         />
       </div>
+      <FormFooter
+        onCancel={() => {
+          if (onCancel) onCancel();
+        }}
+        loading={postLoad}
+      />
     </form>
   );
 };
