@@ -111,7 +111,7 @@ const UpsertProduct = ({
   const onSubmit: SubmitHandler<UpsertProductRequest> = async (data) => {
     setPostLoad(true);
     try {
-      const { data: prod } = await axiosInstance.post("/product/upsert", {
+      const { data: prod } = await axiosInstance.post("/admin/product/upsert", {
         create: {
           ...data,
           published: data.published === "published",

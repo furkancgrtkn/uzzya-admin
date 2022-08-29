@@ -9,7 +9,7 @@ export default function useOrder(id: string) {
     setData(undefined);
     setError(false);
     try {
-      const { data } = await axiosInstance.post(`/order/unique/foradmin`, {
+      const { data } = await axiosInstance.post(`/admin/order/unique`, {
         where: { id: +orderId },
         select: {
           id: true,

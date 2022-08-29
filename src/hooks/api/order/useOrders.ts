@@ -9,7 +9,7 @@ export default function useOrders() {
     setData(undefined);
     setError(false);
     try {
-      const { data } = await axiosInstance.post(`/order`, {
+      const { data } = await axiosInstance.post(`/admin/order`, {
         select: {
           id: true,
           status: true,

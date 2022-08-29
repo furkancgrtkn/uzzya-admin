@@ -9,7 +9,7 @@ export default function useAttributeTypes() {
     setData(undefined);
     setError(false);
     try {
-      const { data } = await axiosInstance.post(`/attribute/type`, {
+      const { data } = await axiosInstance.post(`/admin/attribute/type`, {
         select: {
           id: true,
           title: true,

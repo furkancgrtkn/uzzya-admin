@@ -107,7 +107,7 @@ const Orders = () => {
   const onSubmit: SubmitHandler<UpdateShippingForm> = async (data) => {
     setPostLoad(true);
     try {
-      await axiosInstance.post("/order/update/shipping", {
+      await axiosInstance.post("/admin/order/update/shipping", {
         id: order?.id,
         tracking_number: data.tracking_number,
         productIds: order?.products.map((e) => e.product_id),

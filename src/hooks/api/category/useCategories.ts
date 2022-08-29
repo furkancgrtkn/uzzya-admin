@@ -9,7 +9,7 @@ export default function useCategories() {
     setData(undefined);
     setError(false);
     try {
-      const { data } = await axiosInstance.post(`/category`, {
+      const { data } = await axiosInstance.post(`/admin/category`, {
         select: {
           id: true,
           title: true,

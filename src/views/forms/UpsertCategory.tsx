@@ -82,7 +82,7 @@ const UpsertCategory = ({
   const onSubmit: SubmitHandler<UpsertCategoryRequest> = async (data) => {
     setPostLoad(true);
     try {
-      const { data: cat } = await axiosInstance.post("/category/upsert", {
+      const { data: cat } = await axiosInstance.post("/admin/category/upsert", {
         create: {
           ...data,
           filters: {

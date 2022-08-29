@@ -9,7 +9,7 @@ export default function useProducts() {
     setData(undefined);
     setError(false);
     try {
-      const { data } = await axiosInstance.post(`/product/foradmin`, {
+      const { data } = await axiosInstance.post(`/admin/product`, {
         select: {
           id: true,
           title: true,

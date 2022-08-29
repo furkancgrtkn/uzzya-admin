@@ -59,7 +59,7 @@ const UpsertAttribute = ({
   const onSubmit: SubmitHandler<UpsertAttributeRequest> = async (data) => {
     setPostLoad(true);
     try {
-      await axiosInstance.post("/attribute/upsert", {
+      await axiosInstance.post("/admin/attribute/upsert", {
         data,
         create: {
           ...data,
