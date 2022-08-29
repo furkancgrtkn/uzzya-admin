@@ -187,6 +187,7 @@ const UpsertProduct = ({
         "attributes",
         product.attributes.map((attr) => attr.attribute.id)
       );
+      setValue("published", product.published ? "published" : "draft");
 
       setCurrentImages(product.images);
       setCurrentThumnail(product.thumbnail);
