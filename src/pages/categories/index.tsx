@@ -76,7 +76,7 @@ const Categories = () => {
             }}
           />
           <TrashBtn
-            endPoint={`/category/delete/${row.id}`}
+            endPoint={`/admin/category/delete/${row.id}`}
             onSuccess={() => {}}
           />
         </div>

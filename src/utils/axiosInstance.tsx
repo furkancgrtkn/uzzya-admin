@@ -46,7 +46,7 @@ const refresh = async () => {
   } catch (error: any) {
     deleteAllCookies();
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/login";
   }
 };
 
@@ -69,6 +69,11 @@ axiosInstance.interceptors.request.use(
           "Bearer " + new_access_token;
         return axiosInstance(error.config);
       }
+      if (error.response.status === 403) {
+        deleteAllCookies();
+        localStorage.clear();
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }
@@ -89,7 +94,9 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(error.config);
       }
       if (error.response.status === 403) {
-        window.location.href = "/forbidden";
+        deleteAllCookies();
+        localStorage.clear();
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);

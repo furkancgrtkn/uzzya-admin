@@ -83,7 +83,7 @@ const Products = () => {
             }}
           />
           <TrashBtn
-            endPoint={`/product/delete/${row.id}`}
+            endPoint={`/admin/product/delete/${row.id}`}
             onSuccess={() => {}}
           />
         </div>

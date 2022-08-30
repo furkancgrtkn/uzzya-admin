@@ -37,7 +37,7 @@ const AttributeTypes = () => {
             }}
           />
           <TrashBtn
-            endPoint={`/category/delete/${row.id}`}
+            endPoint={`/admin/category/delete/${row.id}`}
             onSuccess={() => {}}
           />
         </div>
