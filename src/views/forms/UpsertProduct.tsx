@@ -21,19 +21,17 @@ import * as yup from "yup";
 interface UpsertProductRequest {
   slug: string;
   title: string;
-  parent_id: string;
+  parent_id: number;
   description: string;
   short_description: string;
   barcode: string;
-  brand: string;
   stock: number;
   images: string[];
   thumbnail: string;
   price: number;
   discounted_price: number;
-  discount_rate: number;
-  category_id: string;
-  attributes: string[];
+  category_id: number;
+  attributes: number[];
   published: string;
 }
 
@@ -44,20 +42,18 @@ const schema = yup
     slug: yup.string().required("Bu Alan Zorunludur."),
     description: yup.string().required("Bu Alan Zorunludur."),
     short_description: yup.string().required("Bu Alan Zorunludur."),
-    brand: yup.string().required("Bu Alan Zorunludur."),
     barcode: yup.string().required("Bu Alan Zorunludur."),
     stock: yup.number().required("Bu Alan Zorunludur."),
     price: yup.number().required("Bu Alan Zorunludur."),
     published: yup.string().required("Bu Alan Zorunludur."),
     discounted_price: yup.number().required("Bu Alan Zorunludur."),
-    discount_rate: yup.number().required("Bu Alan Zorunludur."),
-    category_id: yup.string().required("Bu Alan Zorunludur."),
+    category_id: yup.number().required("Bu Alan Zorunludur."),
     attributes: yup
       .array()
-      .of(yup.string())
+      .of(yup.number())
       .min(1, "En az bir adet özellik seçmelisiniz.")
       .required("Bu Alan Zorunludur."),
-    parent_id: yup.string().notRequired().nullable(),
+    parent_id: yup.number().notRequired().nullable(),
   })
   .required();
 const UpsertProduct = ({
@@ -133,7 +129,7 @@ const UpsertProduct = ({
             }),
           },
         },
-        where: { id: product?.id || "" },
+        where: { id: product?.id || 0 },
         select: { id: true },
       });
       if (files.length > 0) {
@@ -177,11 +173,9 @@ const UpsertProduct = ({
       setValue("description", product.description);
       setValue("short_description", product.short_description);
       setValue("barcode", product.barcode);
-      setValue("brand", product.brand);
       setValue("stock", product.stock);
       setValue("price", product.price);
       setValue("discounted_price", product.discounted_price);
-      setValue("discount_rate", product.discount_rate);
       setValue("category_id", product.category.id);
       setValue(
         "attributes",
@@ -245,26 +239,6 @@ const UpsertProduct = ({
             error={errors.discounted_price?.message}
             label="İndirimli Fiyat"
           />
-
-          <Input
-            props={{
-              ...register("discount_rate"),
-              placeholder: "Örn. altin-kolye",
-            }}
-            error={errors.discount_rate?.message}
-            label="İndirimli Oranı"
-          />
-        </fieldset>
-
-        <fieldset className="grid grid-cols-2 gap-4">
-          <Input
-            props={{
-              ...register("brand"),
-              placeholder: "Örn. altin-kolye",
-            }}
-            error={errors.brand?.message}
-            label="Marka"
-          />
           <Input
             props={{
               ...register("stock"),
@@ -274,6 +248,7 @@ const UpsertProduct = ({
             label="Stok"
           />
         </fieldset>
+
         <fieldset className="grid grid-cols-2 gap-4">
           <Controller
             control={control}
@@ -308,7 +283,7 @@ const UpsertProduct = ({
               <MultipleSelect
                 label="Özellikler"
                 onChange={(e) => {
-                  if (typeof e === "string") {
+                  if (typeof e === "number") {
                     if (value.includes(e)) {
                       onChange(value.filter((el) => el !== e));
                     } else {

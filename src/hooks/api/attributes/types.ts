@@ -1,13 +1,13 @@
 export type AttributeTypeType = {
-  id: string;
+  id: number;
   title: string;
 };
 
 export type AttributeType = {
-  id: string;
+  id: number;
   value: string;
   attribute_type: {
-    id: string;
+    id: number;
     title: string;
   };
 };

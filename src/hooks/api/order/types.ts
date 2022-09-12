@@ -41,7 +41,7 @@ export interface UniqueOrder {
   updated_at: string;
   created_at: string;
   comment: any;
-  uuid: string;
+  uu id: number;
   rate: any;
   user: {
     email: string;
@@ -77,9 +77,9 @@ export interface UniqueOrder {
 
 export type UniqueOrderProduct = {
   price: number;
-  product_id: string;
+  product_ id: number;
   product: {
-    id: string;
+     id: number;
     thumbnail: string;
     slug: string;
     barcode: string;
@@ -88,14 +88,14 @@ export type UniqueOrderProduct = {
     category: {
       title: string;
       slug: string;
-      id: string;
+       id: number;
     };
     attributes: {
       attribute: {
-        id: string;
+         id: number;
         value: string;
         attribute_type: {
-          id: string;
+           id: number;
           title: string;
         };
       };
@@ -117,7 +117,7 @@ export interface IyzicoJson {
   mdStatus: number;
   binNumber: string;
   paidPrice: number;
-  paymentId: string;
+  payment id: number;
   cardFamily: string;
   systemTime: number;
   callbackUrl: string;
@@ -136,7 +136,7 @@ export interface IyzicoJson {
 
 export interface ItemTransaction {
   price: number;
-  itemId: string;
+  item id: number;
   paidPrice: number;
   blockageRate: number;
   convertedPayout: ConvertedPayout;
@@ -145,7 +145,7 @@ export interface ItemTransaction {
   transactionStatus: number;
   blockageResolvedDate: string;
   merchantPayoutAmount: number;
-  paymentTransactionId: string;
+  paymentTransaction id: number;
   subMerchantPayoutRate: number;
   merchantCommissionRate: number;
   subMerchantPayoutAmount: number;

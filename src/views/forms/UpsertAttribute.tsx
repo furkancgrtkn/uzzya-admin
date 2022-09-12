@@ -15,15 +15,15 @@ import axiosInstance from "src/utils/axiosInstance";
 import * as yup from "yup";
 
 interface UpsertAttributeRequest {
-  attribute_type_id: string;
-  value?: string;
+  attribute_type_id: number;
+  value: string;
 }
 
 const schema = yup
   .object()
   .shape({
-    attribute_type_id: yup.string().required("Bu Alan Zorunludur."),
     value: yup.string().required("Bu Alan Zorunludur."),
+    attribute_type_id: yup.number().required("Bu Alan Zorunludur."),
   })
   .required();
 const UpsertAttribute = ({
@@ -60,18 +60,14 @@ const UpsertAttribute = ({
     setPostLoad(true);
     try {
       await axiosInstance.post("/admin/attribute/upsert", {
-        data,
         create: {
           ...data,
         },
         update: {
           ...data,
         },
-        select: {
-          id: true,
-        },
         where: {
-          id: attribute?.id || "",
+          id: attribute?.id || 0,
         },
       });
 

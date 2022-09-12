@@ -16,8 +16,8 @@ import * as yup from "yup";
 interface UpsertCategoryRequest {
   title: string;
   slug: string;
-  parent_id: string;
-  filters: string[];
+  parent_id: number;
+  filters: number[];
 }
 
 const schema = yup
@@ -25,10 +25,10 @@ const schema = yup
   .shape({
     title: yup.string().required("Bu Alan Zorunludur."),
     slug: yup.string().required("Bu Alan Zorunludur."),
-    parent_id: yup.string().notRequired().nullable(),
+    parent_id: yup.number().notRequired().nullable(),
     filters: yup
       .array()
-      .of(yup.string())
+      .of(yup.number())
       .min(1, "En az bir adet özellik seçmelisiniz.")
       .required("Bu Alan Zorunludur."),
   })
@@ -101,7 +101,7 @@ const UpsertCategory = ({
             }),
           },
         },
-        where: { id: category?.id || "" },
+        where: { id: category?.id || 0 },
         select: { id: true },
       });
       if (files.length > 0) {
@@ -197,7 +197,7 @@ const UpsertCategory = ({
             <MultipleSelect
               label="Filtreler"
               onChange={(e) => {
-                if (typeof e === "string") {
+                if (typeof e === "number") {
                   if (value.includes(e)) {
                     onChange(value.filter((el) => el !== e));
                   } else {

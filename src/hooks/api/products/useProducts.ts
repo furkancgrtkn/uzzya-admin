@@ -20,12 +20,10 @@ export default function useProducts() {
           price: true,
           parent_id: true,
           short_description: true,
-          brand: true,
           barcode: true,
           stock: true,
           thumbnail: true,
           discounted_price: true,
-          discount_rate: true,
           category: {
             select: {
               id: true,

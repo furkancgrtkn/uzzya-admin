@@ -50,18 +50,14 @@ const UpsertAttributeType = ({
     setPostLoad(true);
     try {
       await axiosInstance.post("/admin/attribute/type/upsert", {
-        data,
         create: {
           ...data,
         },
         update: {
           ...data,
         },
-        select: {
-          id: true,
-        },
         where: {
-          id: attributeType?.id || "",
+          id: attributeType?.id || 0,
         },
       });
 

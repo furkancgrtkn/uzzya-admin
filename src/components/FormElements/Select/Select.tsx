@@ -5,15 +5,15 @@ import ErrorMessage from "../ErrorMessage";
 
 interface SelectProps {
   options: {
-    value: string;
+    value: string | number;
     filterValue?: string;
     label: ReactNode;
   }[];
-  selected: string;
+  selected: string | number;
   multiple?: boolean;
   disabled?: boolean;
   // eslint-disable-next-line no-unused-vars
-  onChange: (val: string | undefined) => void;
+  onChange: (val: string | number | undefined) => void;
   error?: string;
   filter?: boolean;
   label: string;

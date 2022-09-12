@@ -1,21 +1,21 @@
 export type Category = {
-  id: string;
+  id: number;
   title: string;
   image: string;
   filters: {
     attribute_type: {
-      id: string;
+      id: number;
       title: string;
     };
   }[];
 
   slug: string;
   parent: {
-    id: string;
+    id: number;
     title: string;
   };
   children: {
-    id: string;
+    id: number;
     title: string;
   }[];
 };

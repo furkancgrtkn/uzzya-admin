@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import axiosInstance from "src/utils/axiosInstance";
 import { UniqueOrder } from "./types";
 
-export default function useOrder(id: string) {
+export default function useOrder( id: number) {
   const [data, setData] = useState<UniqueOrder | undefined>();
   const [error, setError] = useState<boolean>(false);
-  const fetcher = async (orderId: string) => {
+  const fetcher = async (order id: number) => {
     setData(undefined);
     setError(false);
     try {

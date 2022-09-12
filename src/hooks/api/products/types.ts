@@ -1,36 +1,34 @@
 export type ProductType = {
-  id: string;
+  id: number;
   title: string;
   description: string;
   price: number;
   slug: string;
   short_description: string;
-  brand: string;
   barcode: string;
   stock: number;
   images: string[];
   thumbnail: string;
-  parent_id: string;
+  parent_id: number;
   discounted_price: number;
-  discount_rate: number;
   published: boolean;
 
   category: {
-    id: string;
+    id: number;
     title: string;
   };
 
   variants: {
-    id: string;
+    id: number;
   }[];
 
   attributes: {
     attribute: {
       attribute_type: {
-        id: string;
+        id: number;
         title: string;
       };
-      id: string;
+      id: number;
       value: string;
     };
   }[];
