@@ -111,26 +111,16 @@ const UpsertProduct = ({
         create: {
           ...data,
           published: data.published === "published",
-          attributes: {
-            create: data.attributes.map((e) => {
-              return { attribute: { connect: { id: e } } };
-            }),
-          },
+          attributes: data.attributes,
         },
         update: {
           ...data,
           published: data.published === "published",
           images: currentImages,
           thumbnail: currentThumbnail,
-          attributes: {
-            deleteMany: {},
-            create: data.attributes.map((e) => {
-              return { attribute: { connect: { id: e } } };
-            }),
-          },
+          attributes: data.attributes,
         },
         where: { id: product?.id || 0 },
-        select: { id: true },
       });
       if (files.length > 0) {
         const formData = new FormData();

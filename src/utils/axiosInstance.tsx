@@ -6,47 +6,29 @@ const axiosInstance = axios.create({
   baseURL: "http://localhost:8080/api",
 });
 
-function deleteAllCookies() {
-  const cookies = document.cookie.split(";");
-
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    const eqPos = cookie.indexOf("=");
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  }
-}
-
 const refresh = async () => {
   try {
-    const refresh_token = await cookies.get("refresh_token");
-    if (!refresh_token) {
-      throw new Error("No token");
-    }
-    const res = await axios.post(
-      `${process.env.NEXT_APP_API_URL}/api/auth/refresh`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${refresh_token}`,
-        },
-      }
-    );
+    const res = await axios.post(`http://localhost:3000/api/auth/refresh`);
     if (res.data) {
-      cookies.set(`access_token`, `${res.data.access_token}`, {
-        maxAge: 899,
-        path: "/",
-      });
-      cookies.set("refresh_token", `${res.data.refresh_token}`, {
-        maxAge: 604799,
-        path: "/",
-      });
       return res.data.access_token;
     }
   } catch (error: any) {
-    deleteAllCookies();
+    await axios.post(`http://localhost:3000/api/auth/clear`);
     localStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/";
+  }
+};
+
+const errorFunctions = async (error: any) => {
+  const originalConfig = error.config;
+  if (error.response) {
+    if (error.response.status === 401 && !originalConfig._retry) {
+      originalConfig._retry = true;
+      const new_access_token = await refresh();
+      axiosInstance.defaults.headers.common["Authorization"] =
+        "Bearer " + new_access_token;
+      return axiosInstance(error.config);
+    }
   }
 };
 
@@ -60,21 +42,7 @@ axiosInstance.interceptors.request.use(
     return req;
   },
   async (error) => {
-    const originalConfig = error.config;
-    if (error.response) {
-      if (error.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
-        const new_access_token = await refresh();
-        axiosInstance.defaults.headers.common["Authorization"] =
-          "Bearer " + new_access_token;
-        return axiosInstance(error.config);
-      }
-      if (error.response.status === 403) {
-        deleteAllCookies();
-        localStorage.clear();
-        window.location.href = "/login";
-      }
-    }
+    errorFunctions(error);
     return Promise.reject(error);
   }
 );
@@ -84,21 +52,7 @@ axiosInstance.interceptors.response.use(
     return res;
   },
   async (error) => {
-    const originalConfig = error.config;
-    if (error.response) {
-      if (error.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
-        const new_access_token = await refresh();
-        axiosInstance.defaults.headers.common["Authorization"] =
-          "Bearer " + new_access_token;
-        return axiosInstance(error.config);
-      }
-      if (error.response.status === 403) {
-        deleteAllCookies();
-        localStorage.clear();
-        window.location.href = "/login";
-      }
-    }
+    errorFunctions(error);
     return Promise.reject(error);
   }
 );

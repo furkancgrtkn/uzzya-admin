@@ -6,7 +6,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  isLogged: cookies.get("refresh_token") ? true : false,
+  isLogged: cookies.get("access_token") ? true : false,
 };
 
 export const userSlice = createSlice({

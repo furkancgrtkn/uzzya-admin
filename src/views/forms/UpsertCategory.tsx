@@ -85,21 +85,12 @@ const UpsertCategory = ({
       const { data: cat } = await axiosInstance.post("/admin/category/upsert", {
         create: {
           ...data,
-          filters: {
-            create: data.filters.map((e) => {
-              return { attribute_type: { connect: { id: e } } };
-            }),
-          },
+          filters: data.filters,
         },
         update: {
           ...data,
           image: currentImage,
-          filters: {
-            deleteMany: {},
-            create: data.filters.map((e) => {
-              return { attribute_type: { connect: { id: e } } };
-            }),
-          },
+          filters: data.filters,
         },
         where: { id: category?.id || 0 },
         select: { id: true },

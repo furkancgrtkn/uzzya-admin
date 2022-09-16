@@ -29,7 +29,7 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     setLoad(true);
     axios
-      .post(`${process.env.NEXT_APP_API_URL}/api/auth/login`, data)
+      .post(`/api/auth/login`, data)
       .then((res) => {
         if (res.data?.role && res.data.role === "ADMIN") {
           cookies.set(`access_token`, `${res.data.access_token}`, {
